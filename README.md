@@ -1,6 +1,6 @@
 # Suzuya
 <p align="center">
-  <img src="https://vignette.wikia.nocookie.net/kancolle/images/1/1a/Haruna_Kai_Ni_Summer_Full.png/revision/latest?cb=20160801085517">
+  <img src="https://vignette.wikia.nocookie.net/kancolle/images/a/a0/Suzuya_Kai_Ni_Full_Damaged.png/revision/latest?cb=20180818123126">
 </p>
 
 The ShipGirl Project. Suzuya, my random Java learning project. ``(c) Kancolle for Suzuya.``
