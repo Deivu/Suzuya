@@ -28,7 +28,7 @@ public class CommandHandler {
             try {
                 BaseCommand command = s.getConstructor().newInstance();
                 commands.put(command.getTitle(), command);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException error) {
+            } catch (Exception error) {
                 error.printStackTrace();
             }
         }
