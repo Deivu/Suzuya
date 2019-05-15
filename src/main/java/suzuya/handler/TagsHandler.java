@@ -1,10 +1,13 @@
 package suzuya.handler;
 
 import suzuya.Config;
-
-import java.sql.*;
-
 import suzuya.structures.Tag;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.time.Instant;
 
 public class TagsHandler {
     private final Config config;
@@ -28,11 +31,12 @@ public class TagsHandler {
             }
             try {
                 String sql = "CREATE TABLE IF NOT EXISTS tags(" +
-                        "user_id TEXT PRIMARY KEY," +
+                        "user_id TEXT NOT NULL," +
                         "guild_id TEXT NOT NULL," +
                         "title TEXT NOT NULL," +
                         "content TEXT NOT NULL," +
-                        "timestamp INTEGER NOT NULL" +
+                        "timestamp INTEGER NOT NULL," +
+                        "UNIQUE(user_id, guild_id, title)" +
                         ")";
                 PreparedStatement cmd = connection.prepareStatement(sql);
                 cmd.execute();
@@ -44,11 +48,11 @@ public class TagsHandler {
         }
     }
 
-    public Tag getTag(String user_id, String title) {
+    public Tag getTag(String guild_id, String title) {
         Tag tag = new Tag();
         try {
-            PreparedStatement cmd = connection.prepareStatement("SELECT * FROM tags WHERE user_id = ? AND title = ?");
-            cmd.setString(1, user_id);
+            PreparedStatement cmd = connection.prepareStatement("SELECT * FROM tags WHERE guild_id = ? AND title = ?");
+            cmd.setString(1, guild_id);
             cmd.setString(2, title);
             try {
                 ResultSet results = cmd.executeQuery();
@@ -75,5 +79,33 @@ public class TagsHandler {
             error.printStackTrace();
         }
         return tag.exists ? tag : null;
+    }
+
+    public Boolean setTag(String authorID, String guildID, String title, String content) {
+        boolean status = false;
+        String sql = "INSERT OR REPLACE INTO tags" +
+                "(user_id, guild_id, title, content, timestamp)" +
+                "VALUES" +
+                "(?, ?, ?, ?, ?)";
+        Instant now = Instant.now();
+        try {
+            PreparedStatement cmd = connection.prepareStatement(sql);
+            try {
+                cmd.setString(1, authorID);
+                cmd.setString(2, guildID);
+                cmd.setString(3, title);
+                cmd.setString(4, content);
+                cmd.setLong(5, now.getEpochSecond());
+                int update = cmd.executeUpdate();
+                if (update > 0) status = true;
+            } catch (Exception error) {
+                error.printStackTrace();
+            } finally {
+                cmd.close();
+            }
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
+        return status;
     }
 }

@@ -27,8 +27,8 @@ public class Ping extends BaseCommand {
     }
 
     @Override
-    public void run(SuzuyaClient suzuya, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args) {
-        channel.sendMessage(String.format("The current ping to Discord API is **%oms**", suzuya.client.getPing())).queue();
+    public String run(SuzuyaClient suzuya, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args) {
+        return String.format("The current ping to Discord API is **%oms**", suzuya.client.getPing());
     }
 }
 

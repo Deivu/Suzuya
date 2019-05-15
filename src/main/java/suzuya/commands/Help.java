@@ -28,11 +28,11 @@ public class Help extends BaseCommand {
     }
 
     @Override
-    public void run(SuzuyaClient suzuya, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args) {
+    public String run(SuzuyaClient suzuya, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args) {
         SelfUser me = suzuya.client.getSelfUser();
         if (args.length == 2) {
             BaseCommand command = suzuya.commandHandler.getCommand(args[1]);
-            if (command == null) return;
+            if (command == null) return null;
             MessageEmbed embed = new EmbedBuilder()
                     .setColor(suzuya.defaultEmbedColor)
                     .setThumbnail(me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
@@ -40,7 +40,7 @@ public class Help extends BaseCommand {
                     .addField("Command Description", command.getDescription(), false)
                     .build();
             channel.sendMessage(embed).queue();
-            return;
+            return null;
         }
 
         MessageEmbed embed = new EmbedBuilder()
@@ -48,7 +48,9 @@ public class Help extends BaseCommand {
                 .setThumbnail(me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
                 .addField(String.format("%s's Help", me.getName()), "Use <prefix>help <command> for more info.", false)
                 .addField("General", StringUtils.join(suzuya.commandHandler.getCommandsInCategory("General").toArray(), ", "), false)
+                .addField("Tags", StringUtils.join(suzuya.commandHandler.getCommandsInCategory("Tags").toArray(), ", "), false)
                 .build();
         channel.sendMessage(embed).queue();
+        return null;
     }
 }
