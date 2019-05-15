@@ -7,18 +7,24 @@ import suzuya.handler.TagsHandler;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
+import java.lang.management.ManagementFactory;
+
+import com.sun.management.OperatingSystemMXBean;
 
 public class SuzuyaClient {
-    public Config config;
+    private Config config;
+
+    public TagsHandler tagsHandler;
     public JDA client;
     public SettingsHandler settingsHandler;
-    public TagsHandler tagsHandler;
 
+    public OperatingSystemMXBean system = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+    public Runtime runtime = Runtime.getRuntime();
     public Color defaultEmbedColor = new Color(62, 180, 137);
     public Boolean isClientReady = false;
 
 
-    public SuzuyaClient() throws LoginException {
+     SuzuyaClient() throws LoginException {
         config = new Config();
         System.out.println("Working Directory is in:" + config.getDir());
         client = new JDABuilder(config.getToken()).build();
