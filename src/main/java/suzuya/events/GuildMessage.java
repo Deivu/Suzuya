@@ -6,14 +6,18 @@ import suzuya.handler.CommandHandler;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.EmbedBuilder;
+import suzuya.handler.TagsHandler;
 import suzuya.structures.BaseCommand;
 
 public class GuildMessage extends ListenerAdapter {
     public SuzuyaClient suzuya;
-    public CommandHandler handler = new CommandHandler();
+
+    private TagsHandler tags;
+    private CommandHandler handler = new CommandHandler();
 
     public GuildMessage(SuzuyaClient client) {
         suzuya = client;
+        tags = client.tagsHandler;
     }
 
     @Override
@@ -35,10 +39,12 @@ public class GuildMessage extends ListenerAdapter {
                 try {
                     command.run(suzuya, handler, msg, guild, author, member, channel, args);
                 } catch (Exception error) {
+                    SelfUser me = suzuya.client.getSelfUser();
                     MessageEmbed embed = new EmbedBuilder()
                             .setColor(suzuya.defaultEmbedColor)
-                            .addField(String.format("Command %s Raised an error", command.getTitle()), error.toString(), false)
+                            .addField("This command raised an error...", "```java\n" + error.toString() + "```", false)
                             .addField("Goumen Admiral...", "You shouldn't be receiving this... unless you are doing something wrong", false)
+                            .setFooter("Command Name: " + command.getTitle(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
                             .build();
                     channel.sendMessage(embed).queue();
                     error.printStackTrace();
