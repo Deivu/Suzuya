@@ -5,8 +5,8 @@ import suzuya.Config;
 import java.sql.*;
 
 public class SettingsHandler {
-    Config config;
-    Connection connection;
+    private final Config config;
+    private Connection connection;
 
     public SettingsHandler(Config settings) {
         config = settings;

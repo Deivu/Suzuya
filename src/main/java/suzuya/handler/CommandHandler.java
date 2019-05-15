@@ -2,7 +2,6 @@ package suzuya.handler;
 
 import suzuya.structures.BaseCommand;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -10,10 +9,10 @@ import java.util.Set;
 import org.reflections.Reflections;
 
 public class CommandHandler {
-    private HashMap<String, BaseCommand> commands;
+    private final HashMap<String, BaseCommand> commands;
 
     public CommandHandler() {
-        commands = new HashMap<String, BaseCommand>();
+        commands = new HashMap<>();
         loadCommands();
     }
 
@@ -37,9 +36,9 @@ public class CommandHandler {
     }
 
     public ArrayList<String> getCommandsInCategory(String category) {
-        ArrayList<String> array = new ArrayList<String>();
+        ArrayList<String> array = new ArrayList<>();
         for (BaseCommand c : commands.values()) {
-            if (c.getCategory() == category) {
+            if (c.getCategory().equals(category)) {
                 array.add(String.format("`%s`", c.getTitle()));
             }
         }

@@ -7,8 +7,8 @@ import java.sql.*;
 import suzuya.structures.Tag;
 
 public class TagsHandler {
-    Config config;
-    Connection connection;
+    private final Config config;
+    private Connection connection;
 
     public TagsHandler(Config settings) {
         config = settings;

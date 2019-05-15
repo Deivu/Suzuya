@@ -2,23 +2,15 @@ package suzuya.events;
 
 import net.dv8tion.jda.core.entities.*;
 import suzuya.SuzuyaClient;
-import suzuya.handler.CommandHandler;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.EmbedBuilder;
-import suzuya.handler.TagsHandler;
 import suzuya.structures.BaseCommand;
 
 public class GuildMessage extends ListenerAdapter {
-    public SuzuyaClient suzuya;
+    private final SuzuyaClient suzuya;
 
-    private TagsHandler tags;
-    private CommandHandler handler = new CommandHandler();
-
-    public GuildMessage(SuzuyaClient client) {
-        suzuya = client;
-        tags = client.tagsHandler;
-    }
+    public GuildMessage(SuzuyaClient _suzuya) { suzuya = _suzuya; }
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
@@ -34,10 +26,10 @@ public class GuildMessage extends ListenerAdapter {
             MessageChannel channel = msg.getChannel();
             String[] args = msg.getContentRaw().split("\\s+");
             String query = args[0].replace(prefix, "");
-            BaseCommand command = handler.getCommand(query);
+            BaseCommand command = suzuya.commandHandler.getCommand(query);
             if (command != null) {
                 try {
-                    command.run(suzuya, handler, msg, guild, author, member, channel, args);
+                    command.run(suzuya, msg, guild, author, member, channel, args);
                 } catch (Exception error) {
                     SelfUser me = suzuya.client.getSelfUser();
                     MessageEmbed embed = new EmbedBuilder()

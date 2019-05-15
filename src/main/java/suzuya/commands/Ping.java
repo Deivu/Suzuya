@@ -2,7 +2,6 @@ package suzuya.commands;
 
 import net.dv8tion.jda.core.entities.*;
 import suzuya.SuzuyaClient;
-import suzuya.handler.CommandHandler;
 import suzuya.structures.BaseCommand;
 
 public class Ping extends BaseCommand {
@@ -28,7 +27,7 @@ public class Ping extends BaseCommand {
     }
 
     @Override
-    public void run(SuzuyaClient suzuya, CommandHandler handler, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args) {
+    public void run(SuzuyaClient suzuya, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args) {
         channel.sendMessage(String.format("The current ping to Discord API is **%oms**", suzuya.client.getPing())).queue();
     }
 }

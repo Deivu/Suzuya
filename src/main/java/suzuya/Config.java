@@ -43,7 +43,7 @@ public class Config {
                 throw new Error("Config Default Prefix is null, cannot boot the bot.");
             System.out.println("Loaded Configuration");
         } catch (Exception error) {
-            System.out.println(error);
+            error.printStackTrace();
             System.exit(0);
         }
     }

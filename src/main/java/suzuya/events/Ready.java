@@ -12,7 +12,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Ready extends ListenerAdapter {
-    public SuzuyaClient suzuya;
+    private final SuzuyaClient suzuya;
 
     public Ready(SuzuyaClient client) {
         suzuya = client;

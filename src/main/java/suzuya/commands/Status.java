@@ -30,7 +30,7 @@ public class Status extends BaseCommand {
     }
 
     @Override
-    public void run(SuzuyaClient suzuya, CommandHandler handler, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args) {
+    public void run(SuzuyaClient suzuya, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args) {
         SelfUser me = suzuya.client.getSelfUser();
         // will clean it in future probably.
         double free = Math.round((double)suzuya.system.getFreePhysicalMemorySize() / 1073741824);
