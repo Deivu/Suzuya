@@ -18,19 +18,16 @@ public class Ready extends ListenerAdapter {
         suzuya = client;
     }
 
-    private void intervalPlaying()
-    {
+    private void intervalPlaying() {
         Presence presence = suzuya.client.getPresence();
         presence.setGame(Game.playing(String.format("with %o users", suzuya.client.getUserCache().size())));
     }
 
     @Override
-    public void onReady(ReadyEvent event)
-    {
+    public void onReady(ReadyEvent event) {
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(this::intervalPlaying, 1, 60, TimeUnit.SECONDS);
-        for (Guild guild : suzuya.client.getGuilds())
-        {
+        for (Guild guild : suzuya.client.getGuilds()) {
             suzuya.settingsHandler.setDefaults(guild.getId());
         }
         System.out.println("Suzuya has logged in");

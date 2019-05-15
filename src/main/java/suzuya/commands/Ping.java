@@ -8,26 +8,22 @@ import suzuya.structures.BaseCommand;
 public class Ping extends BaseCommand {
 
     @Override
-    public String getTitle()
-    {
+    public String getTitle() {
         return "ping";
     }
 
     @Override
-    public String getUsage()
-    {
+    public String getUsage() {
         return "ping";
     }
 
     @Override
-    public String getDescription()
-    {
+    public String getDescription() {
         return "A simple ping command made harder by Java.";
     }
 
     @Override
-    public String getCategory()
-    {
+    public String getCategory() {
         return "General";
     }
 

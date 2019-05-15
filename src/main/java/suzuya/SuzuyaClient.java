@@ -18,11 +18,9 @@ public class SuzuyaClient {
     public Boolean isClientReady = false;
 
 
-    public SuzuyaClient() throws LoginException
-    {
+    public SuzuyaClient() throws LoginException {
         config = new Config();
         System.out.println("Working Directory is in:" + config.getDir());
-        config.init();
         client = new JDABuilder(config.getToken()).build();
         settingsHandler = new SettingsHandler(config);
         settingsHandler.initDb("Suzuya.db");

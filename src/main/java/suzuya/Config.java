@@ -1,25 +1,33 @@
 package suzuya;
 
 import org.json.*;
+
 import java.io.InputStream;
 import java.io.FileInputStream;
 
 public class Config {
 
-    private String token = "";
+    private String token;
 
-    private String prefix = "";
+    private String prefix;
 
-    public String getToken()
-    {
+    public Config() {
+        init();
+    }
+
+    public String getToken() {
         return token;
     }
 
-    public String getPrefix() { return prefix; }
+    public String getPrefix() {
+        return prefix;
+    }
 
-    public String getDir() { return Suzuya.class.getProtectionDomain().getCodeSource().getLocation().getFile(); }
+    public String getDir() {
+        return Suzuya.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+    }
 
-    public void init() {
+    private void init() {
         try {
             InputStream is = new FileInputStream(this.getDir() + "config.json");
             if (is == null) {
@@ -29,11 +37,14 @@ public class Config {
             JSONObject config = new JSONObject(tokenized);
             this.token = config.getString("token");
             this.prefix = config.getString("default_prefix");
+            if (this.token == null)
+                throw new Error("Config Token is null, cannot boot the bot.");
+            if (this.prefix == null)
+                throw new Error("Config Default Prefix is null, cannot boot the bot.");
             System.out.println("Loaded Configuration");
         } catch (Exception error) {
             System.out.println(error);
             System.exit(0);
         }
-
     }
 }

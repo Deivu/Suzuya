@@ -9,32 +9,27 @@ import suzuya.structures.BaseCommand;
 
 public class Help extends BaseCommand {
     @Override
-    public String getTitle()
-    {
+    public String getTitle() {
         return "help";
     }
 
     @Override
-    public String getUsage()
-    {
+    public String getUsage() {
         return "help <command>";
     }
 
     @Override
-    public String getDescription()
-    {
+    public String getDescription() {
         return "Shows the help menu, or if supplied with args, gets the description of that command.";
     }
 
     @Override
-    public String getCategory()
-    {
+    public String getCategory() {
         return "General";
     }
 
     @Override
-    public void run(SuzuyaClient suzuya, CommandHandler handler, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args)
-    {
+    public void run(SuzuyaClient suzuya, CommandHandler handler, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args) {
         SelfUser me = suzuya.client.getSelfUser();
         if (args.length == 2) {
             BaseCommand command = handler.getCommand(args[1]);
