@@ -14,28 +14,25 @@ public class SettingsHandler {
 
     public void initDb(String db)
     {
-
         String location = "jdbc:sqlite:" + config.getDir() + db;
         try {
             connection = DriverManager.getConnection(location);
-            if (connection != null) System.out.println("A new database has been created.");
+            if (connection != null) System.out.println("Connected to Settings Database.");
         } catch (SQLException error) {
             error.printStackTrace();
         } finally {
             if (connection == null) {
-                System.out.println("Database not found, exiting");
+                System.out.println("No connection to Settings Database. Exiting.");
                 System.exit(0);
             }
             try {
-                String sql = String.format(
-                        "CREATE TABLE IF NOT EXISTS settings(" +
+                String sql = "CREATE TABLE IF NOT EXISTS settings(" +
                         "guild_id TEXT PRIMARY KEY," +
                         "prefix TEXT NOT NULL" +
-                        ")"
-                );
+                        ")";
                 PreparedStatement cmd = connection.prepareStatement(sql);
                 cmd.execute();
-            } catch (SQLException error) {
+            } catch (Exception error) {
                 error.printStackTrace();
                 System.exit(0);
             }
