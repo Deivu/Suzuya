@@ -30,6 +30,7 @@ public class Config {
     private void init() {
         try {
             InputStream is = new FileInputStream(this.getDir() + "config.json");
+            //noinspection ConstantConditions
             if (is == null) {
                 throw new NullPointerException("Cannot find config.json");
             }

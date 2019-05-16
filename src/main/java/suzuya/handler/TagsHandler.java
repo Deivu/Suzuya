@@ -35,7 +35,7 @@ public class TagsHandler {
                         "guild_id TEXT NOT NULL," +
                         "title TEXT NOT NULL," +
                         "content TEXT NOT NULL," +
-                        "timestamp INTEGER NOT NULL," +
+                        "timestamp UNSIGNED BIG INT NOT NULL," +
                         "UNIQUE(user_id, guild_id, title)" +
                         ")";
                 PreparedStatement cmd = connection.prepareStatement(sql);
@@ -56,6 +56,7 @@ public class TagsHandler {
             cmd.setString(2, title);
             try {
                 ResultSet results = cmd.executeQuery();
+                //noinspection TryFinallyCanBeTryWithResources
                 try {
                     if (results.next()) {
                         tag.authorID = results.getString("user_id");
@@ -90,6 +91,7 @@ public class TagsHandler {
         Instant now = Instant.now();
         try {
             PreparedStatement cmd = connection.prepareStatement(sql);
+            //noinspection TryFinallyCanBeTryWithResources
             try {
                 cmd.setString(1, authorID);
                 cmd.setString(2, guildID);

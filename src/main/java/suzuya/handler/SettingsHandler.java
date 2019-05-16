@@ -1,6 +1,7 @@
 package suzuya.handler;
 
 import suzuya.Config;
+import suzuya.structures.Settings;
 
 import java.sql.*;
 
@@ -43,6 +44,7 @@ public class SettingsHandler {
         String sql = "INSERT INTO settings (guild_id, prefix) VALUES (?, ?) ON CONFLICT(guild_id) DO UPDATE SET guild_id = guild_id";
         try {
             PreparedStatement cmd = connection.prepareStatement(sql);
+            //noinspection TryFinallyCanBeTryWithResources
             try {
                 cmd.setString(1, guild_id);
                 cmd.setString(2, config.getPrefix());
@@ -57,10 +59,13 @@ public class SettingsHandler {
         }
     }
 
+
+    @SuppressWarnings("unused")
     public void setDataString(String guild_id, String column, String data) {
         String sql = "UPDATE settings SET " + column + " = ? WHERE guild_id = ?";
         try {
             PreparedStatement cmd = connection.prepareStatement(sql);
+            //noinspection TryFinallyCanBeTryWithResources
             try {
                 cmd.setString(1, data);
                 cmd.setString(2, guild_id);
@@ -75,16 +80,21 @@ public class SettingsHandler {
         }
     }
 
-    public String getDataString(String column, String guild_id) {
-        String data = null;
-        String sql = "SELECT " + column + " FROM settings WHERE guild_id = ?";
+    public Settings getSettings(String guild_id) {
+        Settings settings = new Settings();
+        String sql = "SELECT * FROM settings WHERE guild_id = ?";
         try {
             PreparedStatement cmd = connection.prepareStatement(sql);
+            //noinspection TryFinallyCanBeTryWithResources
             try {
                 cmd.setString(1, guild_id);
                 ResultSet results = cmd.executeQuery();
+                //noinspection TryFinallyCanBeTryWithResources
                 try {
-                    if (results.next()) data = results.getString(column);
+                    if (results.next()) {
+                        settings.prefix = results.getString("prefix");
+                        settings.isInit = true;
+                    }
                 } catch (Exception error) {
                     error.printStackTrace();
                 } finally {
@@ -98,6 +108,6 @@ public class SettingsHandler {
         } catch (SQLException error) {
             error.printStackTrace();
         }
-        return data;
+        return settings.isInit ? settings : null;
     }
 }

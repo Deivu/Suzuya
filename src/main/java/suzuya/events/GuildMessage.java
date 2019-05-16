@@ -7,6 +7,8 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.EmbedBuilder;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.Tag;
+import suzuya.structures.HandlerArgs;
+import suzuya.structures.Settings;
 
 public class GuildMessage extends ListenerAdapter {
     private final SuzuyaClient suzuya;
@@ -16,22 +18,18 @@ public class GuildMessage extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (!suzuya.isClientReady || event.isWebhookMessage()) return;
-        User author = event.getAuthor();
-        if (author.isBot()) return;
-        Message msg = event.getMessage();
-        String content = msg.getContentRaw();
-        Member member = event.getMember();
-        Guild guild = event.getGuild();
-        String prefix = suzuya.settingsHandler.getDataString("prefix", guild.getId());
-        if (content.startsWith(prefix)) {
-            MessageChannel channel = msg.getChannel();
-            String[] args = msg.getContentRaw().split("\\s+");
-            String query = args[0].replace(prefix, "").toLowerCase();
+        HandlerArgs handler = new HandlerArgs(suzuya, event);
+        if (handler.author.isBot()) return;
+        Settings config = suzuya.settingsHandler.getSettings(handler.guild.getId());
+        String content = handler.msg.getContentRaw();
+        if (content.startsWith(config.prefix)) {
+            String[] args = content.split("\\s+");
+            String query = args[0].replace(config.prefix, "").toLowerCase();
             BaseCommand command = suzuya.commandHandler.getCommand(query);
             if (command != null) {
                 try {
-                    String response = command.run(suzuya, msg, guild, author, member, channel, args);
-                    if (response != null) channel.sendMessage(response).queue();
+                    String response = command.run(handler, config, args);
+                    if (response != null) handler.channel.sendMessage(response).queue();
                 } catch (Exception error) {
                     SelfUser me = suzuya.client.getSelfUser();
                     MessageEmbed embed = new EmbedBuilder()
@@ -40,13 +38,13 @@ public class GuildMessage extends ListenerAdapter {
                             .addField("Goumen Admiral...", "You shouldn't be receiving this... unless you are doing something wrong", false)
                             .setFooter("Command Name: " + command.getTitle(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
                             .build();
-                    channel.sendMessage(embed).queue();
+                    handler.channel.sendMessage(embed).queue();
                     error.printStackTrace();
                 }
             } else {
-                Tag tag = suzuya.tagsHandler.getTag(guild.getId(), query);
+                Tag tag = suzuya.tagsHandler.getTag(handler.guild.getId(), query);
                 if (tag == null) return;
-                channel.sendMessage(tag.content).queue();
+                handler.channel.sendMessage(tag.content).queue();
             }
         }
     }

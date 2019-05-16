@@ -5,32 +5,29 @@ import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
 
 
-public class Ping extends BaseCommand {
+public class ListTags extends BaseCommand {
     @Override
     public String getTitle() {
-        return "ping";
-
+        return "listtags";
     }
 
     @Override
     public String getUsage() {
-        return "ping";
+        return "listtags <tag_title>";
     }
 
     @Override
     public String getDescription() {
-        return "A simple ping command made harder by Java.";
-
+        return "Lists all the available tags to use.";
     }
 
     @Override
     public String getCategory() {
-        return "General";
+        return "Tags";
     }
 
     @Override
     public String run(HandlerArgs handler, Settings config, String[] args) {
-        return String.format("The current ping to Discord API is **%oms**", handler.suzuya.client.getPing());
+        return null;
     }
 }
-

@@ -1,8 +1,5 @@
 package suzuya.structures;
 
-import net.dv8tion.jda.core.entities.*;
-import suzuya.SuzuyaClient;
-
 public abstract class BaseCommand {
 
     public abstract String getTitle();
@@ -13,5 +10,5 @@ public abstract class BaseCommand {
 
     public abstract String getCategory();
 
-    public abstract String run(SuzuyaClient suzuya, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args);
+    public abstract String run(HandlerArgs handler, Settings config, String[] args);
 }

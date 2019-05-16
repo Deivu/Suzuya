@@ -1,17 +1,20 @@
 package suzuya.commands;
 
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.*;
-import suzuya.SuzuyaClient;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import suzuya.structures.BaseCommand;
+import suzuya.structures.HandlerArgs;
+import suzuya.structures.Settings;
 
 import java.time.Instant;
 
 public class Status extends BaseCommand {
+
     @Override
     public String getTitle() {
         return "status";
     }
+
 
     @Override
     public String getUsage() {
@@ -29,27 +32,25 @@ public class Status extends BaseCommand {
     }
 
     @Override
-    public String run(SuzuyaClient suzuya, Message msg, Guild guild, User author, Member member, MessageChannel channel, String[] args) {
-        SelfUser me = suzuya.client.getSelfUser();
-        // will clean it in future probably.
-        double free = Math.round((double)suzuya.system.getFreePhysicalMemorySize() / 1073741824);
-        double total = Math.round((double)suzuya.system.getTotalPhysicalMemorySize() / 1073741824);
-        double cpuusage = Math.round(suzuya.system.getSystemCpuLoad() * 100);
-        double maxalloc = Math.round((double)suzuya.runtime.maxMemory() / 1073741824);
-        double allocated = Math.round((double)suzuya.runtime.totalMemory() / 1073741824);
+    public String run(HandlerArgs handler, Settings config, String[] args) {
+        double free = Math.round((double) handler.suzuya.system.getFreePhysicalMemorySize() / 1073741824);
+        double total = Math.round((double) handler.suzuya.system.getTotalPhysicalMemorySize() / 1073741824);
+        double cpuusage = Math.round(handler.suzuya.system.getSystemCpuLoad() * 100);
+        double maxalloc = Math.round((double) handler.suzuya.runtime.maxMemory() / 1073741824);
+        double allocated = Math.round((double) handler.suzuya.runtime.totalMemory() / 1073741824);
         boolean useMB = false;
         if (allocated < 1.0) {
-            allocated = Math.round((double) suzuya.runtime.totalMemory() / 1048576);
+            allocated = Math.round((double) handler.suzuya.runtime.totalMemory() / 1048576);
             useMB = true;
         }
         MessageEmbed embed = new EmbedBuilder()
-                .setColor(suzuya.defaultEmbedColor)
-                .setThumbnail(me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
+                .setColor(handler.suzuya.defaultEmbedColor)
+                .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                 .addField(
                         "Program Stats",
                         "```asciidoc\n" +
-                                "Guild(s) Count   :: " + suzuya.client.getGuildCache().size() + "\n" +
-                                "User(s)  Count   :: " + suzuya.client.getUserCache().size() + "\n" +
+                                "Guild(s) Count   :: " + handler.suzuya.client.getGuildCache().size() + "\n" +
+                                "User(s)  Count   :: " + handler.suzuya.client.getUserCache().size() + "\n" +
                                 "Allocated Memory :: " + allocated + (useMB ? " MB" : " GB") + "\n" +
                                 "Max Allocated    :: " + maxalloc + " GB" +
                                 "```",
@@ -66,9 +67,9 @@ public class Status extends BaseCommand {
                 )
                 .addField("Suzuya", "Something placeholder here for now", false)
                 .setTimestamp(Instant.now())
-                .setFooter("Current Status", me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
+                .setFooter("Current Status", handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                 .build();
-        channel.sendMessage(embed).queue();
+        handler.channel.sendMessage(embed).queue();
         return null;
     }
 }
