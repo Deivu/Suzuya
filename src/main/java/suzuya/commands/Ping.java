@@ -6,10 +6,10 @@ import suzuya.structures.Settings;
 
 
 public class Ping extends BaseCommand {
+
     @Override
     public String getTitle() {
         return "ping";
-
     }
 
     @Override
@@ -20,7 +20,6 @@ public class Ping extends BaseCommand {
     @Override
     public String getDescription() {
         return "A simple ping command made harder by Java.";
-
     }
 
     @Override

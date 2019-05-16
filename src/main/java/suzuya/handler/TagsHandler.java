@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.Instant;
+import java.util.ArrayList;
 
 public class TagsHandler {
     private final Config config;
@@ -80,6 +81,68 @@ public class TagsHandler {
             error.printStackTrace();
         }
         return tag.exists ? tag : null;
+    }
+
+    public ArrayList<Tag> listGuildTags(String guild_id) {
+        ArrayList<Tag> tags = new ArrayList<>();
+        try {
+            PreparedStatement cmd = connection.prepareStatement("SELECT * FROM tags WHERE guild_id = ?");
+            cmd.setString(1, guild_id);
+            try {
+                ResultSet results = cmd.executeQuery();
+                //noinspection TryFinallyCanBeTryWithResources
+                try {
+                    while (results.next()) {
+                        Tag tag = new Tag();
+                        tag.authorID = results.getString("user_id");
+                        tag.guildID = results.getString("guild_id");
+                        tag.title = results.getString("title");
+                        tag.content = results.getString("content");
+                        tag.timestamp = results.getInt("timestamp");
+                        tag.exists = true;
+                        tags.add(tag);
+                    }
+                } catch (Exception error) {
+                    error.printStackTrace();
+                } finally {
+                    results.close();
+                }
+            } catch (Exception error) {
+                error.printStackTrace();
+            } finally {
+                cmd.close();
+            }
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
+        return tags.size() >= 1 ? tags : null;
+    }
+
+    public String getTagContent(String guild_id, String title) {
+        String content = null;
+        try {
+            PreparedStatement cmd = connection.prepareStatement("SELECT content FROM tags WHERE guild_id = ? AND title = ?");
+            cmd.setString(1, guild_id);
+            cmd.setString(2, title);
+            try {
+                ResultSet results = cmd.executeQuery();
+                //noinspection TryFinallyCanBeTryWithResources
+                try {
+                    if (results.next()) content = results.getString("content");
+                } catch (Exception error) {
+                    error.printStackTrace();
+                } finally {
+                    results.close();
+                }
+            } catch (Exception error) {
+                error.printStackTrace();
+            } finally {
+                cmd.close();
+            }
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
+        return content;
     }
 
     public Boolean setTag(String authorID, String guildID, String title, String content) {

@@ -6,6 +6,7 @@ import net.dv8tion.jda.core.JDABuilder;
 import suzuya.handler.CommandHandler;
 import suzuya.handler.SettingsHandler;
 import suzuya.handler.TagsHandler;
+import suzuya.structures.Page;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
@@ -31,5 +32,13 @@ public class SuzuyaClient {
         System.out.println("Working Directory is in:" + config.getDir());
         settingsHandler.initDb("Suzuya.db");
         tagsHandler.initDb("SuzuyaTags.db");
+    }
+
+    public Page paginate(Integer length, Integer page, Integer max) {
+        if (page == null) page = 1;
+        int limit = length / max + ((length % max == 0) ? 0 : 1);
+        int selected = page < 1 ? 1 : page > limit ? limit : page;
+        int start = (selected - 1) * max;
+        return new Page(selected, limit, start, length > max ? start + max : length);
     }
 }

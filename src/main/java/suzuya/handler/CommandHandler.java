@@ -1,12 +1,11 @@
 package suzuya.handler;
 
+import org.reflections.Reflections;
 import suzuya.structures.BaseCommand;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
-
-import org.reflections.Reflections;
 
 public class CommandHandler {
     private final HashMap<String, BaseCommand> commands;

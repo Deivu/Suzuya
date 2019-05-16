@@ -15,7 +15,6 @@ public class Status extends BaseCommand {
         return "status";
     }
 
-
     @Override
     public String getUsage() {
         return "status";

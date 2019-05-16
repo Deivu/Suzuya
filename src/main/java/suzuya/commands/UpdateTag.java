@@ -4,19 +4,19 @@ import org.apache.commons.lang3.StringUtils;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
-import suzuya.structures.Tag;
 
 import java.util.Arrays;
 
-public class AddTag extends BaseCommand {
+public class UpdateTag extends BaseCommand {
+
     @Override
     public String getTitle() {
-        return "addtag";
+        return "updatetag";
     }
 
     @Override
     public String getUsage() {
-        return "addtag <tag_title> <tag_content>";
+        return "updatetag <tag_title> <tag_content>";
     }
 
     @Override
@@ -41,7 +41,7 @@ public class AddTag extends BaseCommand {
         String content = StringUtils.join(Arrays.copyOfRange(args, 2, args.length), " ");
         if (content.length() > 1024)
             return "Admiral, I humbly ask you to keep your tag message below 1024 characters. *grins*";
-        Tag tag = handler.suzuya.tagsHandler.getTag(handler.guild.getId(), title);
+        suzuya.structures.Tag tag = handler.suzuya.tagsHandler.getTag(handler.guild.getId(), title);
         if (tag == null) {
             Boolean results = handler.suzuya.tagsHandler.setTag(handler.author.getId(), handler.guild.getId(), title, content);
             return results ? "Admiral, I saved the tag " + title + " to my database. You can now use it like a command." : "I failed to edit the tag, probably there is some issues";

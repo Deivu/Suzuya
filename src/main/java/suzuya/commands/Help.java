@@ -43,7 +43,6 @@ public class Help extends BaseCommand {
             handler.channel.sendMessage(embed).queue();
             return null;
         }
-
         MessageEmbed embed = new EmbedBuilder()
                 .setColor(handler.suzuya.defaultEmbedColor)
                 .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())

@@ -1,19 +1,20 @@
 package suzuya.events;
 
-import net.dv8tion.jda.core.entities.*;
-import suzuya.SuzuyaClient;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.EmbedBuilder;
+import suzuya.SuzuyaClient;
 import suzuya.structures.BaseCommand;
-import suzuya.structures.Tag;
 import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
 
 public class GuildMessage extends ListenerAdapter {
     private final SuzuyaClient suzuya;
 
-    public GuildMessage(SuzuyaClient _suzuya) { suzuya = _suzuya; }
+    public GuildMessage(SuzuyaClient _suzuya) {
+        suzuya = _suzuya;
+    }
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
@@ -31,20 +32,19 @@ public class GuildMessage extends ListenerAdapter {
                     String response = command.run(handler, config, args);
                     if (response != null) handler.channel.sendMessage(response).queue();
                 } catch (Exception error) {
-                    SelfUser me = suzuya.client.getSelfUser();
                     MessageEmbed embed = new EmbedBuilder()
                             .setColor(suzuya.defaultEmbedColor)
                             .addField("This command raised an error...", "```java\n" + error.toString() + "```", false)
                             .addField("Goumen Admiral...", "You shouldn't be receiving this... unless you are doing something wrong", false)
-                            .setFooter("Command Name: " + command.getTitle(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
+                            .setFooter("Command Name: " + command.getTitle(), handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                             .build();
                     handler.channel.sendMessage(embed).queue();
                     error.printStackTrace();
                 }
             } else {
-                Tag tag = suzuya.tagsHandler.getTag(handler.guild.getId(), query);
+                String tag = suzuya.tagsHandler.getTagContent(handler.guild.getId(), query);
                 if (tag == null) return;
-                handler.channel.sendMessage(tag.content).queue();
+                handler.channel.sendMessage(tag).queue();
             }
         }
     }
