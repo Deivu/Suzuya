@@ -20,7 +20,7 @@ public class Ready extends ListenerAdapter {
 
     private void intervalPlaying() {
         Presence presence = suzuya.client.getPresence();
-        presence.setGame(Game.playing(String.format("with %o users", suzuya.client.getUserCache().size())));
+        presence.setGame(Game.playing(String.format("with %s users", suzuya.client.getUserCache().size())));
     }
 
     @Override
@@ -30,7 +30,17 @@ public class Ready extends ListenerAdapter {
         for (Guild guild : suzuya.client.getGuilds()) {
             suzuya.settingsHandler.setDefaults(guild.getId());
         }
-        System.out.println("Suzuya has logged in");
+        System.out.println(
+                String.format("Shipgirl %s is now logged in to Discord", suzuya.client.getSelfUser().getName())
+        );
+        long channels = suzuya.client.getPrivateChannelCache().size() + suzuya.client.getVoiceChannelCache().size() + suzuya.client.getTextChannelCache().size();
+        System.out.println(
+                String.format("Currently serving %s Guild(s), %s Channel(s) and %s User(s)",
+                        suzuya.client.getGuildCache().size(),
+                        channels,
+                        suzuya.client.getUserCache().size()
+                )
+        );
         suzuya.isClientReady = true;
     }
 }
