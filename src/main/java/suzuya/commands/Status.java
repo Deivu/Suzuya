@@ -32,36 +32,31 @@ public class Status extends BaseCommand {
 
     @Override
     public String run(HandlerArgs handler, Settings config, String[] args) {
-        double free = Math.round((double) handler.suzuya.system.getFreePhysicalMemorySize() / 1073741824);
-        double total = Math.round((double) handler.suzuya.system.getTotalPhysicalMemorySize() / 1073741824);
         double cpuusage = Math.round(handler.suzuya.system.getSystemCpuLoad() * 100);
-        double maxalloc = Math.round((double) handler.suzuya.runtime.maxMemory() / 1073741824);
-        double allocated = Math.round((double) handler.suzuya.runtime.totalMemory() / 1073741824);
-        boolean useMB = false;
-        if (allocated < 1.0) {
-            allocated = Math.round((double) handler.suzuya.runtime.totalMemory() / 1048576);
-            useMB = true;
-        }
+        String free = convert((double) handler.suzuya.system.getFreePhysicalMemorySize());
+        String total = convert((double) handler.suzuya.system.getTotalPhysicalMemorySize());
+        String maxalloc = convert((double) handler.suzuya.runtime.maxMemory());
+        String allocated = convert((double) handler.suzuya.runtime.totalMemory());
         MessageEmbed embed = new EmbedBuilder()
                 .setColor(handler.suzuya.defaultEmbedColor)
                 .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                 .addField(
                         "Program Stats",
                         "```asciidoc\n" +
-                                "Guild(s) Count   :: " + handler.suzuya.client.getGuildCache().size() + "\n" +
-                                "User(s)  Count   :: " + handler.suzuya.client.getUserCache().size() + "\n" +
-                                "Allocated Memory :: " + allocated + (useMB ? " MB" : " GB") + "\n" +
-                                "Max Allocated    :: " + maxalloc + " GB" +
-                                "```",
+                              "Guild(s) Count   :: " + handler.suzuya.client.getGuildCache().size() + "\n" +
+                              "User(s)  Count   :: " + handler.suzuya.client.getUserCache().size() + "\n" +
+                              "Allocated Memory :: " + allocated + "\n" +
+                              "Max Allocated    :: " + maxalloc +
+                              "```",
                         false
                 )
                 .addField(
                         "Container Stats",
                         "```asciidoc\n" +
-                                "CPU Usage        :: " + cpuusage + " %" + "\n" +
-                                "Free Memory      :: " + free + " GB" + "\n" +
-                                "Total Memory     :: " + total + " GB" +
-                                "```",
+                              "CPU Usage        :: " + cpuusage + " %" + "\n" +
+                              "Free Memory      :: " + free + "\n" +
+                              "Total Memory     :: " + total +
+                              "```",
                         false
                 )
                 .addField("Suzuya", "Something placeholder here for now", false)
@@ -70,5 +65,17 @@ public class Status extends BaseCommand {
                 .build();
         handler.channel.sendMessage(embed).queue();
         return null;
+    }
+
+    private String convert(Double value) {
+        String parsed;
+        if (value < 1000000000) {
+            double data = Math.round(value / 1048576);
+            parsed = String.format("%s MB", data);
+            return parsed;
+        }
+        double data = Math.round(value / 1073741824);
+        parsed = String.format("%s GB", data);
+        return parsed;
     }
 }
