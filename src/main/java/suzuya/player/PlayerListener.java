@@ -15,8 +15,8 @@ public class PlayerListener extends AudioEventAdapter {
     private SuzuyaPlayer suzuyaPlayer;
     private SelfUser me;
 
-    public PlayerListener(SuzuyaPlayer _suzuyaPlayer) {
-        this.suzuyaPlayer = _suzuyaPlayer;
+    public PlayerListener(SuzuyaPlayer suzuyaPlayer) {
+        this.suzuyaPlayer = suzuyaPlayer;
         this.me = suzuyaPlayer.suzuya.client.getSelfUser();
     }
 
@@ -44,22 +44,22 @@ public class PlayerListener extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (endReason.mayStartNext) player.startTrack(suzuyaPlayer.queue.poll(), false);
-        suzuyaPlayer.queue.clear();
-        MessageEmbed embed = new EmbedBuilder()
-                .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
-                .setTitle("Player Ended")
-                .setDescription("You are free to start a new one again.")
-                .setFooter(me.getName(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
-                .setTimestamp(Instant.now())
-                .build();
-        suzuyaPlayer.handleMessage(embed);
-        // endReason == FINISHED: A track finished or died by an exception (mayStartNext = true).
-        // endReason == LOAD_FAILED: Loading of a track failed (mayStartNext = true).
-        // endReason == STOPPED: The player was stopped.
-        // endReason == REPLACED: Another track started playing while this had not finished
-        // endReason == CLEANUP: Player hasn't been queried for a while, if you want you can put a
-        //                       clone of this back to your queue
+        if (endReason.name().equals("REPLACED")) return;
+        AudioTrack toPlay = suzuyaPlayer.queue.poll();
+        if (suzuyaPlayer.queue.size() == 0) {
+            suzuyaPlayer.queue.clear();
+            MessageEmbed embed = new EmbedBuilder()
+                    .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
+                    .setTitle("Player Ended")
+                    .setDescription("You are free to start a new one again.")
+                    .setFooter(me.getName(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
+                    .setTimestamp(Instant.now())
+                    .build();
+            suzuyaPlayer.handleMessage(embed);
+            suzuyaPlayer.destroy();
+            return;
+        }
+        player.startTrack(toPlay, false);
     }
 
     @Override

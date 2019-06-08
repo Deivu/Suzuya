@@ -12,8 +12,8 @@ import suzuya.structures.Settings;
 public class GuildMessage extends ListenerAdapter {
     private final SuzuyaClient suzuya;
 
-    public GuildMessage(SuzuyaClient _suzuya) {
-        suzuya = _suzuya;
+    public GuildMessage(SuzuyaClient suzuya) {
+        this.suzuya = suzuya;
     }
 
     @Override

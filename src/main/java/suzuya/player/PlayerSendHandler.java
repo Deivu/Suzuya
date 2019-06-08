@@ -8,8 +8,8 @@ public class PlayerSendHandler implements AudioSendHandler {
     private final AudioPlayer player;
     private AudioFrame lastFrame;
 
-    public PlayerSendHandler(AudioPlayer _player) {
-        this.player = _player;
+    public PlayerSendHandler(AudioPlayer player) {
+        this.player = player;
     }
 
     @Override

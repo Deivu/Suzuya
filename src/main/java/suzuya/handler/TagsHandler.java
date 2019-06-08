@@ -14,8 +14,8 @@ public class TagsHandler {
     private final Config config;
     private Connection connection;
 
-    public TagsHandler(Config settings) {
-        config = settings;
+    public TagsHandler(Config config) {
+        this.config = config;
     }
 
     public void initDb(String db) {

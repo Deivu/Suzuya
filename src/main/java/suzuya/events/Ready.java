@@ -14,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 public class Ready extends ListenerAdapter {
     private final SuzuyaClient suzuya;
 
-    public Ready(SuzuyaClient client) {
-        suzuya = client;
+    public Ready(SuzuyaClient suzuya) {
+        this.suzuya = suzuya;
     }
 
     private void intervalPlaying() {

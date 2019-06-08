@@ -7,6 +7,8 @@ import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
 
+import java.time.Instant;
+
 public class Help extends BaseCommand {
 
     @Override
@@ -39,16 +41,20 @@ public class Help extends BaseCommand {
                     .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                     .addField("Command Usage", command.getUsage(), false)
                     .addField("Command Description", command.getDescription(), false)
+                    .setTimestamp(Instant.now())
                     .build();
             handler.channel.sendMessage(embed).queue();
             return null;
         }
         MessageEmbed embed = new EmbedBuilder()
                 .setColor(handler.suzuya.defaultEmbedColor)
+                .setTitle(String.format("%s's Help", handler.me.getName()))
+                .setDescription("Use <prefix>help <command> for more info.")
                 .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
-                .addField(String.format("%s's Help", handler.me.getName()), "Use <prefix>help <command> for more info.", false)
                 .addField("General", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("General").toArray(), ", "), false)
                 .addField("Tags", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Tags").toArray(), ", "), false)
+                .addField("Moosik", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Moosik").toArray(), ", "), false)
+                .setTimestamp(Instant.now())
                 .build();
         handler.channel.sendMessage(embed).queue();
         return null;

@@ -9,8 +9,8 @@ public class SettingsHandler {
     private final Config config;
     private Connection connection;
 
-    public SettingsHandler(Config settings) {
-        config = settings;
+    public SettingsHandler(Config config) {
+        this.config = config;
     }
 
     public void initDb(String db) {

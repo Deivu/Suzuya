@@ -2,15 +2,11 @@ package suzuya.commands;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.core.entities.VoiceChannel;
-import org.apache.commons.lang3.StringUtils;
 import suzuya.player.SuzuyaResolver;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
 import suzuya.player.SuzuyaPlayer;
-import suzuya.structures.SuzuyaTrack;
-
-import java.util.concurrent.CompletableFuture;
 
 public class Play extends BaseCommand {
 
@@ -40,7 +36,7 @@ public class Play extends BaseCommand {
             return "Admiral, you forgot the link, dummy.";
         VoiceChannel voiceChannel = handler.member.getVoiceState().getChannel();
         if (voiceChannel == null)
-            return "Admiral, you must be in a voice channel to execute this command";
+            return "Admiral, Suzuya knows you aren't in a voice channel, dummy.";
         String url = args[1];
         if (handler.suzuya.players.containsKey(handler.guild.getId())) {
             new SuzuyaResolver(handler.suzuya.PlayerManager).resolve(url)
@@ -62,6 +58,7 @@ public class Play extends BaseCommand {
                         suzuyaPlayer.handleMessage("Added the track **" + _track.getInfo().title + "** to the queue");
                         return null;
                     });
+            return null;
         }
         new SuzuyaResolver(handler.suzuya.PlayerManager).resolve(url)
                 .thenApply(res -> {

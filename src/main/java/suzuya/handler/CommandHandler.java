@@ -11,7 +11,7 @@ public class CommandHandler {
     private final HashMap<String, BaseCommand> commands;
 
     public CommandHandler() {
-        commands = new HashMap<>();
+        this.commands = new HashMap<>();
         loadCommands();
     }
 

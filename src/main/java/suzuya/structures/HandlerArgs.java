@@ -13,8 +13,8 @@ public class HandlerArgs {
     public TextChannel channel;
     public SelfUser me;
 
-    public HandlerArgs(SuzuyaClient _suzuya, GuildMessageReceivedEvent event) {
-        suzuya = _suzuya;
+    public HandlerArgs(SuzuyaClient suzuya, GuildMessageReceivedEvent event) {
+        this.suzuya = suzuya;
         build(event);
     }
 

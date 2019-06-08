@@ -1,5 +1,6 @@
 package suzuya;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.bandcamp.BandcampAudioSourceManager;
@@ -47,6 +48,14 @@ public class SuzuyaClient {
         settingsHandler.initDb("Suzuya.db");
         tagsHandler.initDb("SuzuyaTags.db");
         System.out.println("Database initialized without errors");
+        setPlayerSettings();
+    }
+
+    private void setPlayerSettings() {
+        AudioConfiguration audioConfig = PlayerManager.getConfiguration();
+        audioConfig.setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
+        audioConfig.setOpusEncodingQuality(10);
+        System.out.println("AudioPlayer settings are now set.");
         YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager();
         youtube.setPlaylistPageCount(500);
         PlayerManager.registerSourceManager(youtube);

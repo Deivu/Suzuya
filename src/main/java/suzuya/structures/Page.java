@@ -6,10 +6,10 @@ public class Page {
     public final Integer start;
     public final Integer end;
 
-    public Page(Integer _current, Integer _max, Integer _start, Integer _end) {
-        current = _current;
-        max = _max;
-        start = _start;
-        end = _end;
+    public Page(Integer current, Integer max, Integer start, Integer end) {
+        this.current = current;
+        this.max = max;
+        this.start = start;
+        this.end = end;
     }
 }
