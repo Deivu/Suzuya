@@ -173,4 +173,26 @@ public class TagsHandler {
         }
         return status;
     }
+
+    public Boolean deleteTag(String guildID, String title) {
+        boolean status = false;
+        String sql = "DELETE FROM tags WHERE guild_id = ? AND title = ?";
+        try {
+            PreparedStatement cmd = connection.prepareStatement(sql);
+            //noinspection TryFinallyCanBeTryWithResources
+            try {
+                cmd.setString(1, guildID);
+                cmd.setString(2, title);
+                int update = cmd.executeUpdate();
+                if (update > 0) status = true;
+            } catch (Exception error) {
+                error.printStackTrace();
+            } finally {
+                cmd.close();
+            }
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
+        return status;
+    }
 }

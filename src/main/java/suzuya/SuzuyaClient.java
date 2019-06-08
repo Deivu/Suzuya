@@ -1,21 +1,35 @@
 package suzuya;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.bandcamp.BandcampAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.beam.BeamAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sun.management.OperatingSystemMXBean;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import suzuya.handler.CommandHandler;
 import suzuya.handler.SettingsHandler;
 import suzuya.handler.TagsHandler;
+import suzuya.player.SuzuyaPlayer;
 import suzuya.structures.Page;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.lang.management.ManagementFactory;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SuzuyaClient {
     private final Config config = new Config();
 
     public final JDA client = new JDABuilder(config.getToken()).build();
+    public final AudioPlayerManager PlayerManager = new DefaultAudioPlayerManager();
+    public final ConcurrentHashMap<String, SuzuyaPlayer> players = new ConcurrentHashMap<String, SuzuyaPlayer>();
 
     public final CommandHandler commandHandler = new CommandHandler();
     public final SettingsHandler settingsHandler = new SettingsHandler(config);
@@ -32,6 +46,18 @@ public class SuzuyaClient {
         System.out.println("Working Directory is in:" + config.getDir());
         settingsHandler.initDb("Suzuya.db");
         tagsHandler.initDb("SuzuyaTags.db");
+        System.out.println("Database initialized without errors");
+        YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager();
+        youtube.setPlaylistPageCount(500);
+        PlayerManager.registerSourceManager(youtube);
+        PlayerManager.registerSourceManager(new BandcampAudioSourceManager());
+        PlayerManager.registerSourceManager(new SoundCloudAudioSourceManager());
+        PlayerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
+        PlayerManager.registerSourceManager(new VimeoAudioSourceManager());
+        PlayerManager.registerSourceManager(new BeamAudioSourceManager());
+        PlayerManager.registerSourceManager(new HttpAudioSourceManager());
+        PlayerManager.registerSourceManager(new LocalAudioSourceManager());
+        System.out.println("Registered the AudioPlayer sources managers");
     }
 
     public Page paginate(Integer length, Integer page, Integer max) {
