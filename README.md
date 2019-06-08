@@ -8,4 +8,13 @@ The ShipGirl Project. Suzuya, my random Java learning project. ``(c) Kancolle fo
 Suzuya is just a good girl tbh, 10/10 would love Suzuya.
 
 ### Selfhosting?
-IDK tbh. soon maybe, I mean it doesn't even have actual content other than framework so why you want to host it?
+1. You need a config.json file on where the jar file is
+
+> Example config.json
+```json
+{
+    "token": "token",
+    "default_prefix": "!"
+}
+```
+2. Run the .jar file
