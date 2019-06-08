@@ -1,9 +1,9 @@
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.10'
-}
-
 plugins {
     id 'java'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.10'
 }
 
 group 'moe.suzuya'
