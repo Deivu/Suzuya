@@ -39,15 +39,21 @@ public class PlayerListener extends AudioEventAdapter {
                 .setFooter(me.getName(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
                 .setTimestamp(Instant.now())
                 .build();
-        suzuyaPlayer.itsSendMessageButWithHandling(suzuyaPlayer.textChannel.sendMessage(embed));
+        suzuyaPlayer.handleMessage(embed);
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (endReason.mayStartNext) {
-            player.startTrack(suzuyaPlayer.queue.poll(), false);
-        }
-
+        if (endReason.mayStartNext) player.startTrack(suzuyaPlayer.queue.poll(), false);
+        suzuyaPlayer.queue.clear();
+        MessageEmbed embed = new EmbedBuilder()
+                .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
+                .setTitle("Player Ended")
+                .setDescription("You are free to start a new one again.")
+                .setFooter(me.getName(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
+                .setTimestamp(Instant.now())
+                .build();
+        suzuyaPlayer.handleMessage(embed);
         // endReason == FINISHED: A track finished or died by an exception (mayStartNext = true).
         // endReason == LOAD_FAILED: Loading of a track failed (mayStartNext = true).
         // endReason == STOPPED: The player was stopped.
@@ -58,11 +64,20 @@ public class PlayerListener extends AudioEventAdapter {
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
-        // An already playing track threw an exception (track end event will still be received separately)
+        String friendlyError = exception.severity.equals(FriendlyException.Severity.COMMON) ? exception.getMessage() : "Something bizarre happened.";
+        MessageEmbed embed = new EmbedBuilder()
+                .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
+                .setTitle("Player Error, Skipping the track.")
+                .setDescription("```" + friendlyError + "```")
+                .setFooter(me.getName(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
+                .setTimestamp(Instant.now())
+                .build();
+        suzuyaPlayer.handleMessage(embed);
     }
 
     @Override
     public void onTrackStuck(AudioPlayer player, AudioTrack track, long thresholdMs) {
+        suzuyaPlayer.handleMessage("Player is stuck, skipping the track..");
         player.startTrack(suzuyaPlayer.queue.poll(), false);
     }
 }
