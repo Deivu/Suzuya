@@ -2,6 +2,7 @@ package suzuya;
 
 import org.json.*;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.FileInputStream;
 
@@ -24,7 +25,15 @@ public class Config {
     }
 
     public String getDir() {
-        return Suzuya.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+        String dir = null;
+        try {
+            File file = new File(Suzuya.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            String fileName = file.getName();
+            dir = file.getPath().replace(fileName, "");
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
+        return dir;
     }
 
     private void init() {
