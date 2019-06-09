@@ -27,7 +27,7 @@ public class Config {
     public String getDir() {
         String dir = null;
         try {
-            File file = new File(Suzuya.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            File file = new File(Sortie.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             String fileName = file.getName();
             dir = file.getPath().replace(fileName, "");
         } catch (Exception error) {

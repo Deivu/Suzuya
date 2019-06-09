@@ -36,7 +36,7 @@ public class SuzuyaPlayer {
         if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
             audioManager.openAudioConnection(voiceChannel);
         }
-        suzuya.players.put(guild.getId(), this);
+        suzuya.players.putIfAbsent(guild.getId(), this);
     }
 
     public void handleMessage(String message) {
