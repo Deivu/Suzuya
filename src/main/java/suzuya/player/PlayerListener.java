@@ -32,6 +32,7 @@ public class PlayerListener extends AudioEventAdapter {
 
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
+        if (suzuyaPlayer.volume != player.getVolume()) player.setVolume(suzuyaPlayer.volume);
         MessageEmbed embed = new EmbedBuilder()
                 .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
                 .setTitle("Now Playing")

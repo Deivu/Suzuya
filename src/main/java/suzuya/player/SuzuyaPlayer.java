@@ -23,6 +23,8 @@ public class SuzuyaPlayer {
 
     public TextChannel textChannel;
 
+    public int volume = 50;
+
     public SuzuyaPlayer(SuzuyaClient suzuya, TextChannel textChannel, VoiceChannel voiceChannel) {
         this.suzuya = suzuya;
         this.textChannel = textChannel;
@@ -36,7 +38,13 @@ public class SuzuyaPlayer {
         if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
             audioManager.openAudioConnection(voiceChannel);
         }
+        player.setFrameBufferDuration(500);
         suzuya.players.putIfAbsent(guild.getId(), this);
+    }
+
+    public void setVolume(int volume) {
+        this.volume = volume;
+        player.setVolume(this.volume);
     }
 
     public void handleMessage(String message) {

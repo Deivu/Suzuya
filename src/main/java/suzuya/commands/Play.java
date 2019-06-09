@@ -50,12 +50,12 @@ public class Play extends BaseCommand {
                             for (AudioTrack track : res.tracks) {
                                 suzuyaPlayer.queue.offer(track);
                             }
-                            suzuyaPlayer.handleMessage("Added the playlist **" + res.playlist + "** to the queue");
+                            handler.channel.sendMessage("Added the playlist **" + res.playlist + "** to the queue").queue();
                             return null;
                         }
                         AudioTrack _track = res.tracks.get(0);
                         suzuyaPlayer.queue.offer(_track);
-                        suzuyaPlayer.handleMessage("Added the track **" + _track.getInfo().title + "** to the queue");
+                        handler.channel.sendMessage("Added the track **" + _track.getInfo().title + "** to the queue").queue();
                         return null;
                     });
             return null;
@@ -72,13 +72,13 @@ public class Play extends BaseCommand {
                             suzuyaPlayer.queue.offer(track);
                         }
                         suzuyaPlayer.player.playTrack(suzuyaPlayer.queue.poll());
-                        suzuyaPlayer.handleMessage("Added the playlist **" + res.playlist + "** to the queue");
+                        handler.channel.sendMessage("Added the playlist **" + res.playlist + "** to the queue").queue();
                         return null;
                     }
                     AudioTrack _track = res.tracks.get(0);
                     suzuyaPlayer.queue.offer(_track);
                     suzuyaPlayer.player.playTrack(suzuyaPlayer.queue.poll());
-                    suzuyaPlayer.handleMessage("Added the track **" + _track.getInfo().title + "** to the queue");
+                    handler.channel.sendMessage("Added the track **" + _track.getInfo().title + "** to the queue").queue();
                     return null;
                 });
         return null;
