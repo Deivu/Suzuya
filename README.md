@@ -7,10 +7,10 @@ The ShipGirl Project. Suzuya, my random Java learning project. ``(c) Kancolle fo
 
 Suzuya is just a good girl tbh, 10/10 would love Suzuya.
 
-### Selfhosting?
-> Will provide a download link soon™
+### Configuring Suzuya
+1. Download the latest jar file at our [`CI SERVER`](https://amanogawa.moe/jenkins/job/Suzuya/ws/build/libs/)
 
-1. You need a config.json file on where the jar file is
+2. You need a config.json file on where the suzuya.jar file is
 
 > Example config.json
 ```json
@@ -19,4 +19,8 @@ Suzuya is just a good girl tbh, 10/10 would love Suzuya.
     "default_prefix": "!"
 }
 ```
-2. Run the .jar file
+2. Make the config.json based on the example above, then put it besize suzuya.jar
+
+3. Run the program by doing `java -jar suzuya.jar`
+
+### Made with lots of love - Saya#0113 ❤
