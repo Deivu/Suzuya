@@ -45,7 +45,7 @@ public class SuzuyaClient {
 
     SuzuyaClient() throws LoginException {
         System.out.println("Working Directory is in: " + config.getDir());
-        settingsHandler.initDb("Sortie.db");
+        settingsHandler.initDb("Suzuya.db");
         tagsHandler.initDb("SuzuyaTags.db");
         setPlayerSettings();
     }
