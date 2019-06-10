@@ -71,7 +71,7 @@ public class Status extends BaseCommand {
                                 "Memory Usage        :: " + system_used + " / " + system_total + "\n" +
                                 "```"
                 )
-                .addField("The ShipGirl Project\\™ | Suzuya", "You can report an issue in our [issue tracker](https://github.com/Deivu/Suzuya/issues).", false)
+                .addField("Suzuya || The Shipgirl Project", "You can report an issue in our [issue tracker](https://github.com/Deivu/Suzuya/issues).", false)
                 .setTimestamp(Instant.now())
                 .setFooter("Online for: " + uptime, handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                 .build();
