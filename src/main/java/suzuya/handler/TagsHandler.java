@@ -1,6 +1,7 @@
 package suzuya.handler;
 
 import suzuya.Config;
+import suzuya.SuzuyaClient;
 import suzuya.structures.Tag;
 
 import java.sql.Connection;
@@ -11,23 +12,25 @@ import java.time.Instant;
 import java.util.ArrayList;
 
 public class TagsHandler {
+    private final SuzuyaClient suzuya;
     private final Config config;
     private Connection connection;
 
-    public TagsHandler(Config config) {
-        this.config = config;
+    public TagsHandler(SuzuyaClient suzuya) {
+        this.suzuya = suzuya;
+        this.config = suzuya.config;
     }
 
     public void initDb(String db) {
         String location = "jdbc:sqlite:" + config.getDir() + db;
         try {
             connection = DriverManager.getConnection(location);
-            if (connection != null) System.out.println("Connected to Tags Database.");
+            if (connection != null) suzuya.SuzuyaLog.info("Connected to Tags Database.");
         } catch (Exception error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         } finally {
             if (connection == null) {
-                System.out.println("No connection to Tags Database. Exiting");
+                suzuya.SuzuyaLog.error("No connection to Tags Database. Exiting");
                 System.exit(0);
             }
             try {
@@ -43,7 +46,7 @@ public class TagsHandler {
                 cmd.execute();
                 cmd.close();
             } catch (Exception error) {
-                error.printStackTrace();
+                suzuya.errorTrace(error.getStackTrace());
                 System.exit(0);
             }
         }
@@ -68,17 +71,17 @@ public class TagsHandler {
                         tag.exists = true;
                     }
                 } catch (Exception error) {
-                    error.printStackTrace();
+                    suzuya.errorTrace(error.getStackTrace());
                 } finally {
                     results.close();
                 }
             } catch (Exception error) {
-                error.printStackTrace();
+                suzuya.errorTrace(error.getStackTrace());
             } finally {
                 cmd.close();
             }
         } catch (Exception error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         }
         return tag.exists ? tag : null;
     }
@@ -103,17 +106,17 @@ public class TagsHandler {
                         tags.add(tag);
                     }
                 } catch (Exception error) {
-                    error.printStackTrace();
+                    suzuya.errorTrace(error.getStackTrace());
                 } finally {
                     results.close();
                 }
             } catch (Exception error) {
-                error.printStackTrace();
+                suzuya.errorTrace(error.getStackTrace());
             } finally {
                 cmd.close();
             }
         } catch (Exception error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         }
         return tags.size() >= 1 ? tags : null;
     }
@@ -130,17 +133,17 @@ public class TagsHandler {
                 try {
                     if (results.next()) content = results.getString("content");
                 } catch (Exception error) {
-                    error.printStackTrace();
+                    suzuya.errorTrace(error.getStackTrace());
                 } finally {
                     results.close();
                 }
             } catch (Exception error) {
-                error.printStackTrace();
+                suzuya.errorTrace(error.getStackTrace());
             } finally {
                 cmd.close();
             }
         } catch (Exception error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         }
         return content;
     }
@@ -164,12 +167,12 @@ public class TagsHandler {
                 int update = cmd.executeUpdate();
                 if (update > 0) status = true;
             } catch (Exception error) {
-                error.printStackTrace();
+                suzuya.errorTrace(error.getStackTrace());
             } finally {
                 cmd.close();
             }
         } catch (Exception error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         }
         return status;
     }
@@ -186,12 +189,12 @@ public class TagsHandler {
                 int update = cmd.executeUpdate();
                 if (update > 0) status = true;
             } catch (Exception error) {
-                error.printStackTrace();
+                suzuya.errorTrace(error.getStackTrace());
             } finally {
                 cmd.close();
             }
         } catch (Exception error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         }
         return status;
     }

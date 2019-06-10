@@ -25,7 +25,7 @@ public class GuildMessage extends ListenerAdapter {
         String content = handler.msg.getContentRaw();
         if (content.startsWith(config.prefix)) {
             String[] args = content.split("\\s+");
-            String query = args[0].replace(config.prefix, "").toLowerCase();
+            String query = args[0].substring(config.prefix.length());
             BaseCommand command = suzuya.commandHandler.getCommand(query);
             if (command != null) {
                 try {
@@ -39,7 +39,7 @@ public class GuildMessage extends ListenerAdapter {
                             .setFooter("Command Name: " + command.getTitle(), handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                             .build();
                     handler.channel.sendMessage(embed).queue();
-                    error.printStackTrace();
+                    suzuya.errorTrace(error.getStackTrace());
                 }
             } else {
                 String tag = suzuya.tagsHandler.getTagContent(handler.guild.getId(), query);

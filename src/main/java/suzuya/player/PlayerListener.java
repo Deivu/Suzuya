@@ -11,9 +11,9 @@ import net.dv8tion.jda.core.entities.SelfUser;
 
 import java.time.Instant;
 
-public class PlayerListener extends AudioEventAdapter {
-    private SuzuyaPlayer suzuyaPlayer;
-    private SelfUser me;
+class PlayerListener extends AudioEventAdapter {
+    private final SuzuyaPlayer suzuyaPlayer;
+    private final SelfUser me;
 
     public PlayerListener(SuzuyaPlayer suzuyaPlayer) {
         this.suzuyaPlayer = suzuyaPlayer;
@@ -65,7 +65,14 @@ public class PlayerListener extends AudioEventAdapter {
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
-        String friendlyError = exception.severity.equals(FriendlyException.Severity.COMMON) ? exception.getMessage() : "Something bizarre happened.";
+        String friendlyError;
+        if (exception.severity.equals(FriendlyException.Severity.COMMON)) {
+            friendlyError = exception.getMessage();
+            suzuyaPlayer.suzuya.errorTrace(friendlyError);
+        } else {
+            suzuyaPlayer.suzuya.errorTrace(exception.getStackTrace());
+            friendlyError = "Something " + exception.severity.name() +" bizarre happened.";
+        }
         MessageEmbed embed = new EmbedBuilder()
                 .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
                 .setTitle("Player Error, Skipping the track.")

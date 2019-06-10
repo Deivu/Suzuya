@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import suzuya.SuzuyaClient;
 import suzuya.structures.SuzuyaTrack;
 
 import java.util.ArrayList;
@@ -12,10 +13,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class SuzuyaResolver implements AudioLoadResultHandler {
     private final AudioPlayerManager playerManager;
+    private final SuzuyaClient suzuya;
     private final CompletableFuture<SuzuyaTrack> result = new CompletableFuture<>();
 
-    public SuzuyaResolver(AudioPlayerManager playerManager) {
-        this.playerManager = playerManager;
+    public SuzuyaResolver(SuzuyaClient suzuya) {
+        this.suzuya = suzuya;
+        this.playerManager = suzuya.PlayerManager;
     }
 
     public CompletableFuture<SuzuyaTrack> resolve(String link) {
@@ -32,9 +35,10 @@ public class SuzuyaResolver implements AudioLoadResultHandler {
 
     @Override
     public void playlistLoaded(AudioPlaylist playlist) {
-        String p_name = null;
-        String result = null;
+        String p_name;
+        String result;
         if (playlist.isSearchResult()) {
+            p_name = null;
             result = "SEARCH";
         } else {
             p_name = playlist.getName();
@@ -50,7 +54,11 @@ public class SuzuyaResolver implements AudioLoadResultHandler {
 
     @Override
     public void loadFailed(FriendlyException exception) {
-        exception.printStackTrace();
+        if (exception.severity.equals(FriendlyException.Severity.COMMON)) {
+            suzuya.errorTrace(exception.getMessage());
+        } else {
+            suzuya.errorTrace(exception.getStackTrace());
+        }
         this.result.complete(new SuzuyaTrack(new ArrayList<>(), null, "FAILED"));
     }
 }

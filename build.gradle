@@ -6,14 +6,14 @@ task wrapper(type: Wrapper) {
     gradleVersion = '4.10'
 }
 
-group 'moe.suzuya'
+group 'moe'
 version '1.0'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.9
 
 repositories {
-    mavenCentral()
     jcenter()
+    mavenCentral()
 }
 
 jar {
@@ -33,6 +33,8 @@ jar {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile("org.slf4j:slf4j-api:1.7.26")
+    compile("org.slf4j:slf4j-log4j12:1.7.26")
     compile("net.dv8tion:JDA:3.8.3_460")
     compile("org.reflections:reflections:0.9.11")
     compile("org.apache.commons:commons-lang3:3.8.1")

@@ -5,6 +5,9 @@ import net.dv8tion.jda.core.entities.MessageEmbed;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
+import suzuya.TimeUtil;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 
 import java.time.Instant;
 
@@ -32,36 +35,45 @@ public class Status extends BaseCommand {
 
     @Override
     public String run(HandlerArgs handler, Settings config, String[] args) {
-        double cpuusage = Math.round(handler.suzuya.system.getSystemCpuLoad() * 100);
-        String free = convert((double) handler.suzuya.system.getFreePhysicalMemorySize());
-        String total = convert((double) handler.suzuya.system.getTotalPhysicalMemorySize());
-        String maxalloc = convert((double) handler.suzuya.runtime.maxMemory());
-        String allocated = convert((double) handler.suzuya.runtime.totalMemory());
+        int allocated_cpu = handler.suzuya.runtime.availableProcessors();
+        double totalMemory = handler.suzuya.runtime.totalMemory();
+        double freeMemory = handler.suzuya.runtime.freeMemory();
+        double systemTotal = handler.suzuya.system.getTotalPhysicalMemorySize();
+        double cpu_usage = Math.round(handler.suzuya.system.getSystemCpuLoad() * 100);
+        String system_used = convert(systemTotal - handler.suzuya.system.getFreePhysicalMemorySize());
+        String system_total = convert(systemTotal);
+        String runtime_max_alloc = convert((double) handler.suzuya.runtime.maxMemory());
+        String runtime_alloc = convert(totalMemory);
+        String runtime_free = convert(freeMemory);
+        String used_memory = convert(totalMemory - freeMemory);
+        RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
+        String uptime = TimeUtil.getDurationBreakdown(runtime.getUptime(), false);
         MessageEmbed embed = new EmbedBuilder()
                 .setColor(handler.suzuya.defaultEmbedColor)
                 .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
-                .addField(
-                        "Program Stats",
-                        "```asciidoc\n" +
-                              "Guild(s) Count   :: " + handler.suzuya.client.getGuildCache().size() + "\n" +
-                              "User(s)  Count   :: " + handler.suzuya.client.getUserCache().size() + "\n" +
-                              "Allocated Memory :: " + allocated + "\n" +
-                              "Max Allocated    :: " + maxalloc +
-                              "```",
-                        false
+                .setTitle(handler.me.getName())
+                .setDescription(
+                                "```asciidoc\n= Program Statistics = \n" +
+                                "Guild(s)            :: " + handler.suzuya.client.getGuildCache().size() + "\n" +
+                                "Users(s)            :: " + handler.suzuya.client.getUserCache().size() + "\n" +
+                                "Text Channel(s)     :: " + handler.suzuya.client.getTextChannelCache().size() + "\n" +
+                                "Voice Channel(s)    :: " + handler.suzuya.client.getVoiceChannelCache().size() + "\n" +
+                                "Private Channel(s)  :: " + handler.suzuya.client.getPrivateChannelCache().size() + "\n" +
+                                "Player(s) Active    :: " + handler.suzuya.players.size() + "\n" +
+                                "Allocated Threads   :: " + allocated_cpu + "\n" +
+                                "= Program Memory Stats = \n" +
+                                "Currently Used      :: " + used_memory + "\n" +
+                                "Allocated Free      :: " + runtime_free + "\n" +
+                                "Allocated Reserved  :: " + runtime_alloc + "\n" +
+                                "Maximum Allocatable :: " + runtime_max_alloc + "\n" +
+                                "= System Statistics = \n" +
+                                "CPU Usage           :: " + cpu_usage + " %" + "\n" +
+                                "Memory Usage        :: " + system_used + " / " + system_total + "\n" +
+                                "```"
                 )
-                .addField(
-                        "Container Stats",
-                        "```asciidoc\n" +
-                              "CPU Usage        :: " + cpuusage + " %" + "\n" +
-                              "Free Memory      :: " + free + "\n" +
-                              "Total Memory     :: " + total +
-                              "```",
-                        false
-                )
-                .addField("Suzuya", "Something placeholder here for now", false)
+                .addField("The ShipGirl Project\\™ | Suzuya", "You can report an issue in our [issue tracker](https://github.com/Deivu/Suzuya/issues).", false)
                 .setTimestamp(Instant.now())
-                .setFooter("Current Status", handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
+                .setFooter("Online for: " + uptime, handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                 .build();
         handler.channel.sendMessage(embed).queue();
         return null;

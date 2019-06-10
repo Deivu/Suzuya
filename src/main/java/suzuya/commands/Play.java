@@ -32,14 +32,14 @@ public class Play extends BaseCommand {
 
     @Override
     public String run(HandlerArgs handler, Settings config, String[] args) {
-        if (args[1] == null)
+        if (args.length <= 1)
             return "Admiral, you forgot the link, dummy.";
         VoiceChannel voiceChannel = handler.member.getVoiceState().getChannel();
         if (voiceChannel == null)
-            return "Admiral, Suzuya knows you aren't in a voice channel, dummy.";
+            return "Admiral, "+ handler.me.getName() +" knows you aren't in a voice channel, dummy.";
         String url = args[1];
         if (handler.suzuya.players.containsKey(handler.guild.getId())) {
-            new SuzuyaResolver(handler.suzuya.PlayerManager).resolve(url)
+            new SuzuyaResolver(handler.suzuya).resolve(url)
                     .thenApply(res -> {
                         if (res.result.equals("NO_MATCHES") || res.result.equals("FAILED")) {
                             handler.channel.sendMessage("Admiral, seems like I cannot load this track after all.").queue();
@@ -60,7 +60,7 @@ public class Play extends BaseCommand {
                     });
             return null;
         }
-        new SuzuyaResolver(handler.suzuya.PlayerManager).resolve(url)
+        new SuzuyaResolver(handler.suzuya).resolve(url)
                 .thenApply(res -> {
                     if (res.result.equals("NO_MATCHES") || res.result.equals("FAILED")) {
                         handler.channel.sendMessage("Admiral, seems like I cannot load this track after all.").queue();

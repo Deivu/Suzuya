@@ -1,6 +1,7 @@
 package suzuya;
 
 import suzuya.events.GuildMessage;
+import suzuya.events.GuildVoiceUpdate;
 import suzuya.events.Ready;
 
 import javax.security.auth.login.LoginException;
@@ -9,7 +10,7 @@ import java.lang.InterruptedException;
 class Sortie {
     public static void main(String[] args) throws LoginException, InterruptedException {
         SuzuyaClient suzuya = new SuzuyaClient();
-        suzuya.client.addEventListener(new Ready(suzuya), new GuildMessage(suzuya));
+        suzuya.client.addEventListener(new Ready(suzuya), new GuildMessage(suzuya), new GuildVoiceUpdate(suzuya));
         suzuya.client.awaitReady();
     }
 }

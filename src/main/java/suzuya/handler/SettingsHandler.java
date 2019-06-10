@@ -1,28 +1,31 @@
 package suzuya.handler;
 
 import suzuya.Config;
+import suzuya.SuzuyaClient;
 import suzuya.structures.Settings;
 
 import java.sql.*;
 
 public class SettingsHandler {
+    private final SuzuyaClient suzuya;
     private final Config config;
     private Connection connection;
 
-    public SettingsHandler(Config config) {
-        this.config = config;
+    public SettingsHandler(SuzuyaClient suzuya) {
+        this.suzuya = suzuya;
+        this.config = suzuya.config;
     }
 
     public void initDb(String db) {
         String location = "jdbc:sqlite:" + config.getDir() + db;
         try {
             connection = DriverManager.getConnection(location);
-            if (connection != null) System.out.println("Connected to Settings Database.");
+            if (connection != null) suzuya.SuzuyaLog.info("Connected to Settings Database.");
         } catch (SQLException error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         } finally {
             if (connection == null) {
-                System.out.println("No connection to Settings Database. Exiting.");
+                suzuya.errorTrace("No connection to Settings Database. Exiting.");
                 System.exit(0);
             }
             try {
@@ -34,7 +37,7 @@ public class SettingsHandler {
                 cmd.execute();
                 cmd.close();
             } catch (Exception error) {
-                error.printStackTrace();
+                suzuya.errorTrace(error.getStackTrace());
                 System.exit(0);
             }
         }
@@ -50,12 +53,12 @@ public class SettingsHandler {
                 cmd.setString(2, config.getPrefix());
                 cmd.executeUpdate();
             } catch (Exception error) {
-                error.printStackTrace();
+                suzuya.errorTrace(error.getStackTrace());
             } finally {
                 cmd.close();
             }
         } catch (SQLException error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         }
     }
 
@@ -71,12 +74,12 @@ public class SettingsHandler {
                 cmd.setString(2, guild_id);
                 cmd.executeUpdate();
             } catch (Exception error) {
-                error.printStackTrace();
+                suzuya.errorTrace(error.getStackTrace());
             } finally {
                 cmd.close();
             }
         } catch (SQLException error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         }
     }
 
@@ -96,17 +99,17 @@ public class SettingsHandler {
                         settings.isInit = true;
                     }
                 } catch (Exception error) {
-                    error.printStackTrace();
+                    suzuya.errorTrace(error.getStackTrace());
                 } finally {
                     results.close();
                 }
             } catch (Exception error) {
-                error.printStackTrace();
+                suzuya.errorTrace(error.getStackTrace());
             } finally {
                 cmd.close();
             }
         } catch (SQLException error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         }
         return settings.isInit ? settings : null;
     }

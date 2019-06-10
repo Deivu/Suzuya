@@ -15,13 +15,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class SuzuyaPlayer {
     public final SuzuyaClient suzuya;
     public final BlockingQueue<AudioTrack> queue = new LinkedBlockingQueue<>();
-
-    public final Guild guild;
     public final AudioPlayer player;
-    public final AudioManager audioManager;
     public final VoiceChannel voiceChannel;
 
-    public TextChannel textChannel;
+    private final Guild guild;
+    private final AudioManager audioManager;
+    private final TextChannel textChannel;
 
     public int volume = 50;
 
@@ -52,7 +51,7 @@ public class SuzuyaPlayer {
             if (textChannel == null) return;
             textChannel.sendMessage(message).queue();
         } catch (Exception error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         }
     }
 
@@ -61,11 +60,12 @@ public class SuzuyaPlayer {
             if (textChannel == null) return;
             textChannel.sendMessage(embed).queue();
         } catch (Exception error) {
-            error.printStackTrace();
+            suzuya.errorTrace(error.getStackTrace());
         }
     }
 
     public void destroy() {
+        if (queue.size() != 0) queue.clear();
         player.destroy();
         audioManager.closeAudioConnection();
         suzuya.players.remove(guild.getId());

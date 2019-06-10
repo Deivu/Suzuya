@@ -5,9 +5,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import java.util.ArrayList;
 
 public class SuzuyaTrack {
-    public ArrayList<AudioTrack> tracks;
-    public String playlist;
-    public String result;
+    public final ArrayList<AudioTrack> tracks;
+    public final String playlist;
+    public final String result;
 
     public SuzuyaTrack(ArrayList<AudioTrack> tracks, String playlist, String result) {
         this.tracks = tracks;

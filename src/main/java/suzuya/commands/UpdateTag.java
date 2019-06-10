@@ -31,9 +31,9 @@ public class UpdateTag extends BaseCommand {
 
     @Override
     public String run(HandlerArgs handler, Settings config, String[] args) {
-        if (args[1] == null)
+        if (args.length <= 1)
             return "Admiral, you forgot to specify the tag title, dummy.";
-        if (args[2] == null)
+        if (args.length <= 2)
             return "Admiral, now you forgot to specify the tag contents. Sighs...";
         String title = args[1].toLowerCase();
         if (title.length() > 20)

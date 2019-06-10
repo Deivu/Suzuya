@@ -27,14 +27,14 @@ public class Ready extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(this::intervalPlaying, 1, 60, TimeUnit.SECONDS);
-        for (Guild guild : suzuya.client.getGuilds()) {
+        for (Guild guild : suzuya.client.getGuildCache()) {
             suzuya.settingsHandler.setDefaults(guild.getId());
         }
-        System.out.println(
-                String.format("Shipgirl %s is now logged in to Discord", suzuya.client.getSelfUser().getName())
+        suzuya.SuzuyaLog.info(
+                String.format("%s is now logged in to Discord", suzuya.client.getSelfUser().getName())
         );
         long channels = suzuya.client.getPrivateChannelCache().size() + suzuya.client.getVoiceChannelCache().size() + suzuya.client.getTextChannelCache().size();
-        System.out.println(
+        suzuya.SuzuyaLog.info(
                 String.format("Currently serving %s Guild(s), %s Channel(s) and %s User(s)",
                         suzuya.client.getGuildCache().size(),
                         channels,

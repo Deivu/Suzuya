@@ -29,7 +29,7 @@ public class DeleteTag extends BaseCommand {
 
     @Override
     public String run(HandlerArgs handler, Settings config, String[] args) {
-        if (args[1] == null)
+        if (args.length <= 1)
             return "Admiral, you forgot to specify the tag title, dummy.";
         String title = args[1].toLowerCase();
         suzuya.structures.Tag tag = handler.suzuya.tagsHandler.getTag(handler.guild.getId(), title);
