@@ -42,7 +42,9 @@ public class Shuffle extends BaseCommand {
         List<AudioTrack> list = new ArrayList<>();
         suzuyaPlayer.queue.drainTo(list);
         Collections.shuffle(list);
-        for (AudioTrack track: list) suzuyaPlayer.queue.offer(track);
+        for (AudioTrack track: list) {
+            suzuyaPlayer.queue.offer(track);
+        }
         return "Admiral, " + handler.me.getName() + " shuffled your queue, I deserve some head pat for that.";
     }
 }

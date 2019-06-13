@@ -65,9 +65,9 @@ public class Queue extends BaseCommand {
         MessageEmbed embed = new EmbedBuilder()
                 .setColor(handler.suzuya.defaultEmbedColor)
                 .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
-                .setTitle("Now Playing")
+                .setTitle("\\▶ Now Playing")
                 .setDescription("**" + suzuyaPlayer.player.getPlayingTrack().getInfo().title + "**")
-                .addField("Queued Songs", StringUtils.join(tracks, "\n"), false)
+                .addField("• Queued Songs", StringUtils.join(tracks, "\n"), false)
                 .setFooter(data.current + " / " + data.max + " page(s) | " + suzuyaPlayer.queue.size() + " songs in queue.", handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                 .build();
         handler.channel.sendMessage(embed).queue();

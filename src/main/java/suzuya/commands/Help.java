@@ -48,13 +48,14 @@ public class Help extends BaseCommand {
         }
         MessageEmbed embed = new EmbedBuilder()
                 .setColor(handler.suzuya.defaultEmbedColor)
-                .setTitle(String.format("%s's Help", handler.me.getName()))
-                .setDescription("Use **" + config.prefix + "help <command>** for more info.")
+                .setTitle(String.format("\\❔ %s's Help Menu", handler.me.getName()))
+                .setDescription("Use **" + config.prefix + "help <command>** for more info about a command.")
                 .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
-                .addField("General", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("General").toArray(), ", "), false)
-                .addField("Tags", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Tags").toArray(), ", "), false)
-                .addField("Moosik", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Moosik").toArray(), ", "), false)
-                .addField("Misc", "[Source](https://github.com/Deivu/Suzuya) | [Support](https://discordapp.com/invite/FVqbtGu) | [Donate](https://www.patreon.com/user?u=12059417)", false)
+                .addField("• General", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("General").toArray(), ", "), false)
+                .addField("• Tags", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Tags").toArray(), ", "), false)
+                .addField("• Moosik", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Moosik").toArray(), ", "), false)
+                .addField("\\➡ Additional Links", "[Source](https://github.com/Deivu/Suzuya) | [Issues](https://github.com/Deivu/Suzuya/issues) | [Support](https://discordapp.com/invite/FVqbtGu) | [Donate](https://www.patreon.com/user?u=12059417)", false)
+                .setFooter("Total Commands: " + handler.suzuya.commandHandler.getCommandsSize(), handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                 .setTimestamp(Instant.now())
                 .build();
         handler.channel.sendMessage(embed).queue();

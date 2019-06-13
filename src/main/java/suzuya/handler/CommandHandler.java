@@ -46,4 +46,6 @@ public class CommandHandler {
         }
         return array;
     }
+
+    public int getCommandsSize() { return commands.size(); }
 }

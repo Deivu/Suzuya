@@ -46,12 +46,11 @@ public class Status extends BaseCommand {
         String runtime_alloc = convert(totalMemory);
         String runtime_free = convert(freeMemory);
         String used_memory = convert(totalMemory - freeMemory);
-        RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
-        String uptime = TimeUtil.getDurationBreakdown(runtime.getUptime(), false);
+        String uptime = TimeUtil.getDurationBreakdown(handler.suzuya.runtime_mx.getUptime(), false);
         MessageEmbed embed = new EmbedBuilder()
                 .setColor(handler.suzuya.defaultEmbedColor)
                 .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
-                .setTitle(handler.me.getName())
+                .setTitle("• Program Metrics")
                 .setDescription(
                                 "```asciidoc\n= Program Statistics = \n" +
                                 "Guild(s)            :: " + handler.suzuya.client.getGuildCache().size() + "\n" +
@@ -61,7 +60,7 @@ public class Status extends BaseCommand {
                                 "Private Channel(s)  :: " + handler.suzuya.client.getPrivateChannelCache().size() + "\n" +
                                 "Player(s) Active    :: " + handler.suzuya.players.size() + "\n" +
                                 "Allocated Threads   :: " + allocated_cpu + "\n" +
-                                "= Program Memory Stats = \n" +
+                                "= Memory Statistics = \n" +
                                 "Currently Used      :: " + used_memory + "\n" +
                                 "Allocated Free      :: " + runtime_free + "\n" +
                                 "Allocated Reserved  :: " + runtime_alloc + "\n" +
@@ -71,7 +70,7 @@ public class Status extends BaseCommand {
                                 "Memory Usage        :: " + system_used + " / " + system_total + "\n" +
                                 "```"
                 )
-                .addField("Suzuya || The Shipgirl Project", "You can report an issue in our [issue tracker](https://github.com/Deivu/Suzuya/issues).", false)
+                .addField("• Suzuya || The Shipgirl Project", "Made possible by [JDA](https://github.com/DV8FromTheWorld/JDA) and [Lavaplayer](https://github.com/sedmelluq/lavaplayer). Developed with \\❤ by [Saya](https://github.com/Deivu)", false)
                 .setTimestamp(Instant.now())
                 .setFooter("Online for: " + uptime, handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                 .build();

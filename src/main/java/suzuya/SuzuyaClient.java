@@ -25,6 +25,7 @@ import suzuya.structures.Page;
 import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Arrays;
 
@@ -40,11 +41,12 @@ public class SuzuyaClient {
     public final Color defaultEmbedColor = new Color(62, 180, 137);
 
     public final OperatingSystemMXBean system = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+    public final RuntimeMXBean runtime_mx = ManagementFactory.getRuntimeMXBean();
     public final Runtime runtime = Runtime.getRuntime();
 
-    public Boolean isClientReady = false;
-
     public final JDA client = new JDABuilder(config.getToken()).build();
+
+    public Boolean isClientReady = false;
 
     SuzuyaClient() throws LoginException {
         settingsHandler.initDb("Suzuya.db");
