@@ -16,6 +16,11 @@ repositories {
     mavenCentral()
 }
 
+compileJava.options.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 jar {
     manifest {
         attributes(
@@ -40,5 +45,6 @@ dependencies {
     compile("org.apache.commons:commons-lang3:3.8.1")
     compile("org.xerial:sqlite-jdbc:3.25.2")
     compile("com.sedmelluq:lavaplayer:1.3.17")
+	compile("org.json:json:20180813")
 }
 
