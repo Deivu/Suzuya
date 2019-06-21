@@ -1,6 +1,7 @@
 package suzuya.commands;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.core.Permission;
 import suzuya.player.SuzuyaPlayer;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
@@ -28,6 +29,14 @@ public class Shuffle extends BaseCommand {
     @Override
     public String getCategory() {
         return "Moosik";
+    }
+
+    @Override
+    public boolean ownerOnly() { return false; }
+
+    @Override
+    public Permission[] getPermissions() {
+        return null;
     }
 
     @Override

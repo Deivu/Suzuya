@@ -1,6 +1,7 @@
 package suzuya.commands;
 
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import org.apache.commons.lang3.StringUtils;
 import suzuya.structures.BaseCommand;
@@ -32,6 +33,14 @@ public class Help extends BaseCommand {
     }
 
     @Override
+    public boolean ownerOnly() { return false; }
+
+    @Override
+    public Permission[] getPermissions() {
+        return null;
+    }
+
+    @Override
     public String run(HandlerArgs handler, Settings config, String[] args) {
         if (args.length == 2) {
             BaseCommand command = handler.suzuya.commandHandler.getCommand(args[1]);
@@ -54,6 +63,7 @@ public class Help extends BaseCommand {
                 .addField("• General", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("General").toArray(), ", "), false)
                 .addField("• Tags", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Tags").toArray(), ", "), false)
                 .addField("• Moosik", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Moosik").toArray(), ", "), false)
+                .addField("• Config", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Config").toArray(), ", "), false)
                 .addField("\\➡ Additional Links", "[Source](https://github.com/Deivu/Suzuya) | [Issues](https://github.com/Deivu/Suzuya/issues) | [Support](https://discordapp.com/invite/FVqbtGu) | [Donate](https://www.patreon.com/user?u=12059417)", false)
                 .setFooter("Total Commands: " + handler.suzuya.commandHandler.getCommandsSize(), handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                 .setTimestamp(Instant.now())

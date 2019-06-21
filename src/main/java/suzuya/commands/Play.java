@@ -1,6 +1,7 @@
 package suzuya.commands;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import suzuya.player.SuzuyaResolver;
 import suzuya.structures.BaseCommand;
@@ -31,6 +32,14 @@ public class Play extends BaseCommand {
     }
 
     @Override
+    public boolean ownerOnly() { return false; }
+
+    @Override
+    public Permission[] getPermissions() {
+        return null;
+    }
+
+    @Override
     public String run(HandlerArgs handler, Settings config, String[] args) {
         if (args.length <= 1)
             return "Admiral, you forgot the link, dummy.";
@@ -42,7 +51,7 @@ public class Play extends BaseCommand {
             new SuzuyaResolver(handler.suzuya).resolve(url)
                     .thenApply(res -> {
                         if (res.result.equals("NO_MATCHES") || res.result.equals("FAILED")) {
-                            handler.channel.sendMessage("Admiral, seems like I cannot load this track after all.").queue();
+                            handler.suzuya.handleRest(handler.channel.sendMessage("Admiral, seems like I cannot load this track after all."));
                             return null;
                         }
                         SuzuyaPlayer suzuyaPlayer = handler.suzuya.players.get(handler.guild.getId());
@@ -50,12 +59,12 @@ public class Play extends BaseCommand {
                             for (AudioTrack track : res.tracks) {
                                 suzuyaPlayer.queue.offer(track);
                             }
-                            handler.channel.sendMessage("Added the playlist **" + res.playlist + "** to the queue").queue();
+                            handler.suzuya.handleRest(handler.channel.sendMessage("Added the playlist **" + res.playlist + "** to the queue"));
                             return null;
                         }
                         AudioTrack _track = res.tracks.get(0);
                         suzuyaPlayer.queue.offer(_track);
-                        handler.channel.sendMessage("Added the track **" + _track.getInfo().title + "** to the queue").queue();
+                        handler.suzuya.handleRest(handler.channel.sendMessage("Added the track **" + _track.getInfo().title + "** to the queue"));
                         return null;
                     });
             return null;
@@ -63,7 +72,7 @@ public class Play extends BaseCommand {
         new SuzuyaResolver(handler.suzuya).resolve(url)
                 .thenApply(res -> {
                     if (res.result.equals("NO_MATCHES") || res.result.equals("FAILED")) {
-                        handler.channel.sendMessage("Admiral, seems like I cannot load this track after all.").queue();
+                        handler.suzuya.handleRest(handler.channel.sendMessage("Admiral, seems like I cannot load this track after all."));
                         return null;
                     }
                     SuzuyaPlayer suzuyaPlayer = new SuzuyaPlayer(handler.suzuya, handler.channel, voiceChannel);
@@ -72,13 +81,13 @@ public class Play extends BaseCommand {
                             suzuyaPlayer.queue.offer(track);
                         }
                         suzuyaPlayer.player.playTrack(suzuyaPlayer.queue.poll());
-                        handler.channel.sendMessage("Added the playlist **" + res.playlist + "** to the queue").queue();
+                        handler.suzuya.handleRest(handler.channel.sendMessage("Added the playlist **" + res.playlist + "** to the queue"));
                         return null;
                     }
                     AudioTrack _track = res.tracks.get(0);
                     suzuyaPlayer.queue.offer(_track);
                     suzuyaPlayer.player.playTrack(suzuyaPlayer.queue.poll());
-                    handler.channel.sendMessage("Added the track **" + _track.getInfo().title + "** to the queue").queue();
+                    handler.suzuya.handleRest(handler.channel.sendMessage("Added the track **" + _track.getInfo().title + "** to the queue"));
                     return null;
                 });
         return null;

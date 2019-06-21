@@ -14,6 +14,7 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import com.sun.management.OperatingSystemMXBean;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.requests.RestAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import suzuya.handler.CommandHandler;
@@ -85,4 +86,14 @@ public class SuzuyaClient {
     }
 
     public void errorTrace(String message) { SuzuyaLog.error(message); }
+
+    public boolean handleRest(RestAction action) {
+        try {
+            action.queue();
+            return true;
+        } catch (Exception error) {
+            this.errorTrace(error.getStackTrace());
+            return false;
+        }
+    }
 }

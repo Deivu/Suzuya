@@ -1,6 +1,7 @@
 package suzuya.events;
 
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -8,8 +9,6 @@ import suzuya.SuzuyaClient;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
-
-import javax.annotation.Nullable;
 
 public class GuildMessage extends ListenerAdapter {
     private final SuzuyaClient suzuya;
@@ -44,6 +43,23 @@ public class GuildMessage extends ListenerAdapter {
                 HandleError(error, handler);
             }
             return;
+        }
+        Permission[] perms = command.getPermissions();
+        if (perms != null) {
+            String missing = null;
+            for (Permission perm : perms) {
+                if (!handler.member.hasPermission(perm)) {
+                    missing = perm.getName();
+                    break;
+                }
+            }
+            if (missing != null) {
+                try {
+                    handler.channel.sendMessage("Admiral, you don't have the permission **" + missing + "** to use this command.").queue();
+                } catch (Exception error) {
+                    HandleError(error, handler);
+                }
+            }
         }
         try {
             String response = command.run(handler, config, args);

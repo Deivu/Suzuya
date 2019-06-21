@@ -31,7 +31,9 @@ public class SettingsHandler {
             try {
                 String sql = "CREATE TABLE IF NOT EXISTS settings(" +
                         "guild_id TEXT PRIMARY KEY," +
-                        "prefix TEXT NOT NULL" +
+                        "prefix TEXT NOT NULL," +
+                        "mod_log TEXT," +
+                        "auto_ban TEXT NOT NULL" +
                         ")";
                 PreparedStatement cmd = connection.prepareStatement(sql);
                 cmd.execute();
@@ -44,13 +46,14 @@ public class SettingsHandler {
     }
 
     public void setDefaults(String guild_id) {
-        String sql = "INSERT INTO settings (guild_id, prefix) VALUES (?, ?) ON CONFLICT(guild_id) DO UPDATE SET guild_id = guild_id";
+        String sql = "INSERT INTO settings (guild_id, prefix, auto_ban) VALUES (?, ?, ?) ON CONFLICT(guild_id) DO UPDATE SET guild_id = guild_id";
         try {
             PreparedStatement cmd = connection.prepareStatement(sql);
             //noinspection TryFinallyCanBeTryWithResources
             try {
                 cmd.setString(1, guild_id);
                 cmd.setString(2, config.getPrefix());
+                cmd.setString(3, "false");
                 cmd.executeUpdate();
             } catch (Exception error) {
                 suzuya.errorTrace(error.getStackTrace());
@@ -96,6 +99,8 @@ public class SettingsHandler {
                 try {
                     if (results.next()) {
                         settings.prefix = results.getString("prefix");
+                        settings.mod_log = results.getString("mod_log");
+                        settings.auto_ban = results.getString("auto_ban");
                         settings.isInit = true;
                     }
                 } catch (Exception error) {

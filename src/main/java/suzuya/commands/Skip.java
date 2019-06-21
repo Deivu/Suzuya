@@ -1,5 +1,6 @@
 package suzuya.commands;
 
+import net.dv8tion.jda.core.Permission;
 import suzuya.player.SuzuyaPlayer;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
@@ -25,6 +26,14 @@ public class Skip extends BaseCommand {
     @Override
     public String getCategory() {
         return "Moosik";
+    }
+
+    @Override
+    public boolean ownerOnly() { return false; }
+
+    @Override
+    public Permission[] getPermissions() {
+        return null;
     }
 
     @Override

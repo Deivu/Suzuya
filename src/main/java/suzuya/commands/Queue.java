@@ -2,6 +2,7 @@ package suzuya.commands;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import org.apache.commons.lang3.StringUtils;
 import suzuya.player.SuzuyaPlayer;
@@ -36,6 +37,14 @@ public class Queue extends BaseCommand {
     @Override
     public String getCategory() {
         return "Moosik";
+    }
+
+    @Override
+    public boolean ownerOnly() { return false; }
+
+    @Override
+    public Permission[] getPermissions() {
+        return null;
     }
 
     @Override
