@@ -34,12 +34,14 @@ public class GuildMemberJoin extends ListenerAdapter {
         if (!isExecuted) return;
         String avatar = suzuya.client.getSelfUser().getAvatarUrl() != null ? suzuya.client.getSelfUser().getAvatarUrl() : suzuya.client.getSelfUser().getDefaultAvatarUrl();
         MessageEmbed embed = new EmbedBuilder()
-                .setTitle("• User Bannned")
+                .setTitle("📝 | User Bannned")
                 .setColor(suzuya.defaultEmbedColor)
-                .setDescription("Reason: <:eww:544402708975583243> Possible Lewd User Bot.")
-                .setAuthor(suzuya.client.getSelfUser().getName(), avatar)
-                .addField("• User", user.getAsTag() + "(" + user.getId() + ")", true)
-                .addField("• Moderator", suzuya.client.getSelfUser().getAsTag(), true)
+                .setDescription(
+                    "**• User:** " + user.getAsTag() + " `(" + user.getId() + ")`" +
+                    "**• Moderator:** " + suzuya.client.getSelfUser().getAsTag() +
+                    "**• Reason:** Possible lewd user bot <:lewd:448387419092549632>"
+                )
+                .setAuthor(suzuya.client.getSelfUser().getName(), avatar, avatar)
                 .setTimestamp(Instant.now())
                 .setFooter(guild.getName(), guild.getIconUrl() != null ? guild.getIconUrl() : avatar)
                 .build();
