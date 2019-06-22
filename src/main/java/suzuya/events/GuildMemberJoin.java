@@ -25,7 +25,7 @@ public class GuildMemberJoin extends ListenerAdapter {
         Guild guild = event.getGuild();
         Settings config = suzuya.settingsHandler.getSettings(guild.getId());
         if (!Boolean.parseBoolean(config.auto_ban) || config.mod_log == null) return;
-        TextChannel channel = guild.getTextChannelCache().getElementById(config.mod_log);
+        TextChannel channel = guild.getTextChannelById(config.mod_log);
         if (channel == null) return;
         User user = event.getUser();
         boolean isSpambot = checkSpamBot(user);
@@ -38,8 +38,8 @@ public class GuildMemberJoin extends ListenerAdapter {
                 .setColor(suzuya.defaultEmbedColor)
                 .setDescription(
                     "**• User:** " + user.getAsTag() + " `(" + user.getId() + ")`" +
-                    "**• Moderator:** " + suzuya.client.getSelfUser().getAsTag() +
-                    "**• Reason:** Possible lewd user bot <:lewd:448387419092549632>"
+                    "\n**• Moderator:** " + suzuya.client.getSelfUser().getAsTag() +
+                    "\n**• Reason:** Possible lewd user bot <:lewd:448387419092549632>"
                 )
                 .setAuthor(suzuya.client.getSelfUser().getName(), avatar, avatar)
                 .setTimestamp(Instant.now())

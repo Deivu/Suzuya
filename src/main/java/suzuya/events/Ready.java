@@ -4,12 +4,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.managers.Presence;
 import suzuya.SuzuyaClient;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Ready extends ListenerAdapter {
     private final SuzuyaClient suzuya;
@@ -34,6 +29,7 @@ public class Ready extends ListenerAdapter {
                         suzuya.client.getUserCache().size()
                 )
         );
+        suzuya.client.getPresence().setGame(Game.playing("with Admiral ❤"));
         suzuya.isClientReady = true;
     }
 }

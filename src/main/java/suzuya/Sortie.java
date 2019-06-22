@@ -1,9 +1,6 @@
 package suzuya;
 
-import suzuya.events.GuildMemberJoin;
-import suzuya.events.GuildMessage;
-import suzuya.events.GuildVoiceUpdate;
-import suzuya.events.Ready;
+import suzuya.events.*;
 
 import javax.security.auth.login.LoginException;
 import java.lang.InterruptedException;
@@ -15,7 +12,9 @@ class Sortie {
                 new Ready(suzuya),
                 new GuildMessage(suzuya),
                 new GuildVoiceUpdate(suzuya),
-                new GuildMemberJoin(suzuya)
+                new GuildMemberJoin(suzuya),
+                new PrivateMessageReceived(suzuya),
+                new Reconnected()
         );
         suzuya.client.awaitReady();
     }

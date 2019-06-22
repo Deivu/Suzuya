@@ -5,6 +5,7 @@ import suzuya.SuzuyaClient;
 import suzuya.structures.Settings;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class SettingsHandler {
     private final SuzuyaClient suzuya;
@@ -86,6 +87,41 @@ public class SettingsHandler {
         }
     }
 
+    public ArrayList<Settings> getListSettings(String setting) {
+        ArrayList<Settings> settings = new ArrayList<>();
+        String sql = "SELECT * FROM settings WHERE " + setting + " = 'true'";
+        try {
+            PreparedStatement cmd = connection.prepareStatement(sql);
+            //noinspection TryFinallyCanBeTryWithResources
+            try {
+                ResultSet results = cmd.executeQuery();
+                //noinspection TryFinallyCanBeTryWithResources
+                try {
+                    if (results.next()) {
+                        Settings _settings = new Settings();
+                        _settings.guild_id = results.getString("guild_id");
+                        _settings.prefix = results.getString("prefix");
+                        _settings.mod_log = results.getString("mod_log");
+                        _settings.auto_ban = results.getString("auto_ban");
+                        _settings.isInit = true;
+                        settings.add(_settings);
+                    }
+                } catch (Exception error) {
+                    suzuya.errorTrace(error.getStackTrace());
+                } finally {
+                    results.close();
+                }
+            } catch (Exception error) {
+                suzuya.errorTrace(error.getStackTrace());
+            } finally {
+                cmd.close();
+            }
+        } catch (SQLException error) {
+            suzuya.errorTrace(error.getStackTrace());
+        }
+        return settings;
+    }
+
     public Settings getSettings(String guild_id) {
         Settings settings = new Settings();
         String sql = "SELECT * FROM settings WHERE guild_id = ?";
@@ -98,6 +134,7 @@ public class SettingsHandler {
                 //noinspection TryFinallyCanBeTryWithResources
                 try {
                     if (results.next()) {
+                        settings.guild_id = results.getString("guild_id");
                         settings.prefix = results.getString("prefix");
                         settings.mod_log = results.getString("mod_log");
                         settings.auto_ban = results.getString("auto_ban");
