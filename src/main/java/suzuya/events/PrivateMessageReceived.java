@@ -5,6 +5,7 @@ import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import suzuya.SuzuyaClient;
+import suzuya.structures.CaptchaExecutor;
 import suzuya.structures.Settings;
 
 import java.time.Instant;
@@ -19,34 +20,28 @@ public class PrivateMessageReceived extends ListenerAdapter {
 
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
-        ArrayList<Settings> settings = suzuya.settingsHandler.getListSettings("auto_ban");
-        for (Settings setting : settings) {
-            if (!Boolean.parseBoolean(setting.auto_ban)) continue;
-            if (!pattern.matcher(event.getMessage().getContentRaw()).find()) continue;
-            Guild guild = suzuya.client.getGuildById(setting.guild_id);
-            if (guild == null) continue;
-            User user = event.getAuthor();
-            Member member = guild.getMember(user);
-            if (member == null) continue;
-            boolean isExecuted = suzuya.handleRest(guild.getController().ban(user, 7, "Possible Spam Bot Detected"));
-            if (!isExecuted) continue;
-            if (setting.mod_log == null) continue;
-            TextChannel channel = guild.getTextChannelById(setting.mod_log);
-            if (channel == null) continue;
-            String avatar = suzuya.client.getSelfUser().getAvatarUrl() != null ? suzuya.client.getSelfUser().getAvatarUrl() : suzuya.client.getSelfUser().getDefaultAvatarUrl();
-            MessageEmbed embed = new EmbedBuilder()
-                    .setTitle("📝 | User Bannned")
-                    .setColor(suzuya.defaultEmbedColor)
-                    .setDescription(
-                            "**• User:** " + user.getAsTag() + " `(" + user.getId() + ")`" +
-                            "\n**• Moderator:** " + suzuya.client.getSelfUser().getAsTag() +
-                            "\n**• Reason:** Possible lewd user bot <:lewd:448387419092549632>"
-                    )
-                    .setAuthor(suzuya.client.getSelfUser().getName(), avatar, avatar)
-                    .setTimestamp(Instant.now())
-                    .setFooter(guild.getName(), guild.getIconUrl() != null ? guild.getIconUrl() : avatar)
-                    .build();
-            suzuya.handleRest(channel.sendMessage(embed));
+        User user = event.getAuthor();
+        if (!suzuya.captcha.containsKey(user.getId())) return;
+        CaptchaExecutor captcha = suzuya.captcha.get(user.getId());
+        Settings config = suzuya.settingsHandler.getSettings(captcha.guildID);
+        if (!Boolean.parseBoolean(config.auto_ban)) return;
+        Guild guild = suzuya.client.getGuildById(captcha.guildID);
+        if (guild == null) return;
+        Member member = guild.getMember(user);
+        if (member == null) return;
+        PrivateChannel privateChannel = user.openPrivateChannel().complete();
+        if (!captcha.text.equals(event.getMessage().getContentRaw())) {
+            suzuya.handleRest(privateChannel.sendMessage("<:hibikino:478068372802633739> Admiral, wrong guess on captcha. Try again."));
+            return;
         }
+        captcha.future.cancel(true);
+        Role role = guild.getRoleById("438683349217705984"); // Future reimplementation
+        if (role != null) {
+            suzuya.handleRest(
+                    guild.getController().removeSingleRoleFromMember(member, role).reason("Completed the Verification Process.")
+            );
+        }
+        suzuya.captcha.remove(user.getId());
+        suzuya.handleRest(privateChannel.sendMessage("<:hibikiyes:478068379832549383> Yay! Admiral, you now have access in **" + guild.getName() + "**"));
     }
 }

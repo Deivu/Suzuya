@@ -21,6 +21,7 @@ import suzuya.handler.CommandHandler;
 import suzuya.handler.SettingsHandler;
 import suzuya.handler.TagsHandler;
 import suzuya.player.SuzuyaPlayer;
+import suzuya.structures.CaptchaExecutor;
 import suzuya.structures.Page;
 
 import javax.security.auth.login.LoginException;
@@ -35,6 +36,7 @@ public class SuzuyaClient {
     public final Config config = new Config(this);
     public final AudioPlayerManager PlayerManager = new DefaultAudioPlayerManager();
     public final ConcurrentHashMap<String, SuzuyaPlayer> players = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<String, CaptchaExecutor> captcha = new ConcurrentHashMap<>();
     public final CommandHandler commandHandler = new CommandHandler(this);
     public final SettingsHandler settingsHandler = new SettingsHandler(this);
     public final TagsHandler tagsHandler = new TagsHandler(this);
