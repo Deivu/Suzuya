@@ -7,8 +7,6 @@ import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
 import suzuya.TimeUtil;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 
 import java.time.Instant;
 

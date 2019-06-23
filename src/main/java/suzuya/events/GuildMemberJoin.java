@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 
 public class GuildMemberJoin extends ListenerAdapter {
     private final SuzuyaClient suzuya;
-    private Pattern pattern = Pattern.compile("([A-Z][a-z]+[0-9]{1,4}|[A-Z][a-z]+\\.([a-z]+\\.[a-z]+|[a-z]+[0-9]{1,2}))");
+    private final Pattern pattern = Pattern.compile("([A-Z][a-z]+[0-9]{1,4}|[A-Z][a-z]+\\.([a-z]+\\.[a-z]+|[a-z]+[0-9]{1,2}))");
 
     public GuildMemberJoin(SuzuyaClient suzuya) { this.suzuya = suzuya; }
 

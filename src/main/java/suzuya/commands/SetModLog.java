@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SetModLog extends BaseCommand {
-    private Pattern channelPattern = Pattern.compile("<#(\\d{1,20})>");
+    private final Pattern channelPattern = Pattern.compile("<#(\\d{1,20})>");
 
     @Override
     public String getTitle() {

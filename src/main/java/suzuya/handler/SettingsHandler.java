@@ -87,6 +87,7 @@ public class SettingsHandler {
         }
     }
 
+    @SuppressWarnings("unused")
     public ArrayList<Settings> getListSettings(String setting) {
         ArrayList<Settings> settings = new ArrayList<>();
         String sql = "SELECT * FROM settings WHERE " + setting + " = 'true'";

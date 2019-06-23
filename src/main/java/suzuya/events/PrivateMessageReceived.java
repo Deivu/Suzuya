@@ -1,6 +1,5 @@
 package suzuya.events;
 
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -8,13 +7,8 @@ import suzuya.SuzuyaClient;
 import suzuya.structures.CaptchaExecutor;
 import suzuya.structures.Settings;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
-
 public class PrivateMessageReceived extends ListenerAdapter {
     private final SuzuyaClient suzuya;
-    private final Pattern pattern = Pattern.compile("geniuschat.tk.+");
 
     public PrivateMessageReceived(SuzuyaClient suzuya) { this.suzuya = suzuya; }
 
