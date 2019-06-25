@@ -29,17 +29,22 @@ public class GuildMemberJoin extends ListenerAdapter {
         TextChannel channel = guild.getTextChannelById(config.mod_log);
         if (channel == null) return;
         User user = event.getUser();
+        if (user.isBot()) return;
+
         if (checkName(user) && lessThanWeek(user)) {
-            boolean isExecuted = suzuya.handleRest(guild.getController().ban(user, 7, "Possible Spam Bot Detected"));
+            boolean isExecuted = suzuya.handleRest(guild.getController().kick(
+                    user.getId(),
+                    "Possible Spam Bot Detected")
+            );
             if (!isExecuted) return;
             String avatar = suzuya.client.getSelfUser().getAvatarUrl() != null ? suzuya.client.getSelfUser().getAvatarUrl() : suzuya.client.getSelfUser().getDefaultAvatarUrl();
             MessageEmbed embed = new EmbedBuilder()
-                    .setTitle("📝 | User Bannned")
+                    .setTitle("📝 | User Kicked")
                     .setColor(suzuya.defaultEmbedColor)
                     .setDescription(
                             "**• User:** " + user.getAsTag() + " `(" + user.getId() + ")`" +
                             "\n**• Moderator:** " + suzuya.client.getSelfUser().getAsTag() +
-                            "\n**• Reason:** Possible lewd user bot <:lewd:448387419092549632>"
+                            "\n**• Reason:** <:lewd:448387419092549632> Possible lewd user bot"
                     )
                     .setAuthor(suzuya.client.getSelfUser().getName(), avatar, avatar)
                     .setTimestamp(Instant.now())
@@ -48,44 +53,83 @@ public class GuildMemberJoin extends ListenerAdapter {
             suzuya.handleRest(channel.sendMessage(embed));
             return;
         }
-        Role role = guild.getRoleById("438683349217705984"); // Future reimplementation
+
+        Role role = guild.getRoleById(config.silenced_role);
         if (role != null) {
             suzuya.handleRest(
-                    guild.getController().addSingleRoleToMember(guild.getMember(user), role).reason("Temporary Mute for Verification Process.")
+                    guild.getController().addSingleRoleToMember(
+                            guild.getMember(user),
+                            role
+                    ).reason("Unverified User")
             );
         }
-        PrivateChannel privateChannel = user.openPrivateChannel().complete();
+
+        TextChannel verificationChannel = guild.getTextChannelById(config.verification_channel);
+        if (verificationChannel == null) return;
+
         CaptchaExecutor captcha = new CaptchaExecutor();
+        captcha.verificationChannel = verificationChannel;
         captcha.guildID = guild.getId();
+        captcha.userID = user.getId();
         captcha.text = Captcha.generateText();
         byte[] data = Captcha.generateImage(captcha.text);
-        boolean isExecuted = suzuya.handleRest(
-                privateChannel.sendMessage("❓ | **User Verification in " + guild.getName() + "**\nPlease type the Text you see in the picture. You have **20 seconds** to answer.").addFile(data, "data.png")
-        );
-        if (!isExecuted) return;
-        captcha.runnable = () -> {
-            suzuya.captcha.remove(user.getId());
-            if (!guild.isMember(user)) return;
-            boolean _isExecuted = suzuya.handleRest(guild.getController().kick(user.getId(), "Failed to complete Captcha. Possible spam bot"));
-            if (!_isExecuted) return;
-            String avatar = suzuya.client.getSelfUser().getAvatarUrl() != null ? suzuya.client.getSelfUser().getAvatarUrl() : suzuya.client.getSelfUser().getDefaultAvatarUrl();
-            MessageEmbed embed = new EmbedBuilder()
-                    .setTitle("📝 | User Kicked")
-                    .setColor(suzuya.defaultEmbedColor)
-                    .setDescription(
-                            "**• User:** " + user.getAsTag() + " `(" + user.getId() + ")`" +
-                            "\n**• Moderator:** " + suzuya.client.getSelfUser().getAsTag() +
-                            "\n**• Reason:** Failed to complete Captcha. Possible spam bot <:lewd:448387419092549632>"
-                    )
-                    .setAuthor(suzuya.client.getSelfUser().getName(), avatar, avatar)
-                    .setTimestamp(Instant.now())
-                    .setFooter(guild.getName(), guild.getIconUrl() != null ? guild.getIconUrl() : avatar)
-                    .build();
-            suzuya.handleRest(channel.sendMessage(embed));
-            suzuya.handleRest(privateChannel.sendMessage("<:uggh:448387137596030979> You failed to complete the Verification Process."));
-        };
-        captcha.future = Executors.newSingleThreadScheduledExecutor().schedule(captcha.runnable, 21, TimeUnit.SECONDS);
-        suzuya.captcha.putIfAbsent(user.getId(), captcha);
+        String key = guild.getId() + " " + user.getId();
+
+        verificationChannel.sendMessage(user.getAsMention() + " | Please verify that you are a human. You have **20 seconds** to answer.")
+                .addFile(data, "data.png")
+                .submit()
+                .thenApply(res -> {
+                    captcha.runnable = () -> {
+                        suzuya.captcha.remove(key);
+                        if (!guild.isMember(user)) return;
+                        user.openPrivateChannel()
+                                .submit()
+                                .thenApply(dm -> {
+                                    suzuya.handleRest(
+                                            dm.sendMessage("<:hibiki_drink:545882402401157122> You have been kicked from **" + guild.getName() + "** because you failed to complete the verification.")
+                                    );
+                                    return null;
+                                })
+                                .exceptionally(error -> {
+                                    suzuya.errorTrace(error.getStackTrace());
+                                    return null;
+                                });
+                        boolean _isExecuted = suzuya.handleRest(
+                                guild.getController().kick(
+                                        user.getId(),
+                                        "Failed to complete Captcha. Possible spam bot"
+                                )
+                        );
+                        if (!_isExecuted) return;
+                        String avatar = suzuya.client.getSelfUser().getAvatarUrl() != null ? suzuya.client.getSelfUser().getAvatarUrl() : suzuya.client.getSelfUser().getDefaultAvatarUrl();
+                        MessageEmbed embed = new EmbedBuilder()
+                                .setTitle("📝 | User Kicked")
+                                .setColor(suzuya.defaultEmbedColor)
+                                .setDescription(
+                                        "**• User:** " + user.getAsTag() + " `(" + user.getId() + ")`" +
+                                        "\n**• Moderator:** " + suzuya.client.getSelfUser().getAsTag() +
+                                        "\n**• Reason:** <:hibikino:478068372802633739> Failed to complete the Verification."
+                                )
+                                .setAuthor(suzuya.client.getSelfUser().getName(), avatar, avatar)
+                                .setTimestamp(Instant.now())
+                                .setFooter(guild.getName(), guild.getIconUrl() != null ? guild.getIconUrl() : avatar)
+                                .build();
+                        suzuya.handleRest(channel.sendMessage(embed));
+
+                        suzuya.handleRest(verificationChannel.sendMessage("<:uggh:448387137596030979> **" + user.getAsTag() + "** failed the verification."));
+                        suzuya.handleRest(res.delete());
+                    };
+
+                    captcha.message = res;
+                    captcha.future = Executors.newSingleThreadScheduledExecutor().schedule(captcha.runnable, 21, TimeUnit.SECONDS);
+                    suzuya.captcha.putIfAbsent(key, captcha);
+                    return null;
+                })
+                .exceptionally(error -> {
+                    suzuya.captcha.remove(key);
+                    suzuya.errorTrace(error.getStackTrace());
+                    return null;
+                });
     }
 
     private boolean checkName(User user) {

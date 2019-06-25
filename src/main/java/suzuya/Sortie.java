@@ -11,9 +11,9 @@ class Sortie {
         suzuya.client.addEventListener(
                 new Ready(suzuya),
                 new GuildMessage(suzuya),
+                new GuildVerificationMessage(suzuya),
                 new GuildVoiceUpdate(suzuya),
                 new GuildMemberJoin(suzuya),
-                new PrivateMessageReceived(suzuya),
                 new Reconnected()
         );
         suzuya.client.awaitReady();

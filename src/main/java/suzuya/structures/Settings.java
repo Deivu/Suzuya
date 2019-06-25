@@ -6,4 +6,6 @@ public class Settings {
     public String prefix;
     public String mod_log;
     public String auto_ban;
+    public String verification_channel;
+    public String silenced_role;
 }

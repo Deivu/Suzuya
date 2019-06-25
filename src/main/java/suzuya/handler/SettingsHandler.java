@@ -34,7 +34,9 @@ public class SettingsHandler {
                         "guild_id TEXT PRIMARY KEY," +
                         "prefix TEXT NOT NULL," +
                         "mod_log TEXT," +
-                        "auto_ban TEXT NOT NULL" +
+                        "auto_ban TEXT NOT NULL," +
+                        "verification_channel TEXT," +
+                        "silenced_role TEXT" +
                         ")";
                 PreparedStatement cmd = connection.prepareStatement(sql);
                 cmd.execute();
@@ -104,6 +106,8 @@ public class SettingsHandler {
                         _settings.prefix = results.getString("prefix");
                         _settings.mod_log = results.getString("mod_log");
                         _settings.auto_ban = results.getString("auto_ban");
+                        _settings.verification_channel = results.getString("verification_channel");
+                        _settings.silenced_role = results.getString("silenced_role");
                         _settings.isInit = true;
                         settings.add(_settings);
                     }
@@ -139,6 +143,8 @@ public class SettingsHandler {
                         settings.prefix = results.getString("prefix");
                         settings.mod_log = results.getString("mod_log");
                         settings.auto_ban = results.getString("auto_ban");
+                        settings.verification_channel = results.getString("verification_channel");
+                        settings.silenced_role = results.getString("silenced_role");
                         settings.isInit = true;
                     }
                 } catch (Exception error) {
