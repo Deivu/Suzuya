@@ -64,7 +64,7 @@ public class TimeUtil {
         final StringBuilder sb = new StringBuilder();
         if (days > 0) {
             sb.append(days);
-            sb.append("d");
+            sb.append("d ");
         }
         if (hours > 0) {
             sb.append(String.format("%02d", hours));
@@ -76,7 +76,7 @@ public class TimeUtil {
         }
         if (seconds > 0) {
             sb.append(String.format("%02d", seconds));
-            sb.append("s");
+            sb.append("s ");
         }
         if ((seconds <= 0) && (millis > 0) && showMS) {
             sb.append(String.format("%02d", millis));
