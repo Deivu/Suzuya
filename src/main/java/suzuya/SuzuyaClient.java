@@ -28,8 +28,10 @@ import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class SuzuyaClient {
     public final Logger SuzuyaLog = LoggerFactory.getLogger(Sortie.class);
@@ -52,8 +54,8 @@ public class SuzuyaClient {
     public Boolean isClientReady = false;
 
     SuzuyaClient() throws LoginException {
-        settingsHandler.initDb("Suzuya.db");
-        tagsHandler.initDb("SuzuyaTags.db");
+        settingsHandler.initDb();
+        tagsHandler.initDb();
         setPlayerSettings();
     }
 
@@ -83,8 +85,12 @@ public class SuzuyaClient {
         return new Page(selected, limit, start, length > max ? start + max : length);
     }
 
-    public void errorTrace(StackTraceElement[] stack) {
-        SuzuyaLog.error(Arrays.toString(stack));
+    public void errorTrace(String title, StackTraceElement[] traces) {
+        List<String> trace = Arrays.stream(traces)
+                .map(val -> val.toString() + "\n")
+                .collect(Collectors.toList());
+        trace.add(0, title + "\n");
+        SuzuyaLog.error(trace.toString());
     }
 
     public void errorTrace(String message) { SuzuyaLog.error(message); }
@@ -94,7 +100,7 @@ public class SuzuyaClient {
             action.queue();
             return true;
         } catch (Exception error) {
-            this.errorTrace(error.getStackTrace());
+            this.errorTrace(error.getMessage(), error.getStackTrace());
             return false;
         }
     }

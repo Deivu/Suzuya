@@ -59,7 +59,7 @@ public class Config {
                 throw new Error("Config Default Prefix is null, cannot boot the bot.");
             suzuya.SuzuyaLog.info("Configuration Loaded.");
         } catch (Exception error) {
-            suzuya.errorTrace(error.getStackTrace());
+            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
             System.exit(0);
         }
     }

@@ -45,7 +45,7 @@ public class GuildVerificationMessage extends ListenerAdapter {
                         return null;
                     })
                     .exceptionally(error -> {
-                        suzuya.errorTrace(error.getStackTrace());
+                        suzuya.errorTrace(error.getMessage(), error.getStackTrace());
                         return null;
                     });
             return;
@@ -79,7 +79,7 @@ public class GuildVerificationMessage extends ListenerAdapter {
                     return null;
                 })
                 .exceptionally(error -> {
-                    suzuya.errorTrace(error.getStackTrace());
+                    suzuya.errorTrace(error.getMessage(), error.getStackTrace());
                     return null;
                 });
     }

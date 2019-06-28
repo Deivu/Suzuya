@@ -70,7 +70,7 @@ class PlayerListener extends AudioEventAdapter {
             friendlyError = exception.getMessage();
             suzuyaPlayer.suzuya.errorTrace(friendlyError);
         } else {
-            suzuyaPlayer.suzuya.errorTrace(exception.getStackTrace());
+            suzuyaPlayer.suzuya.errorTrace(exception.getMessage(), exception.getStackTrace());
             friendlyError = "Something " + exception.severity.name() +" bizarre happened.";
         }
         MessageEmbed embed = new EmbedBuilder()

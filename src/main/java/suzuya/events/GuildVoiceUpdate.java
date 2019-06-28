@@ -48,7 +48,7 @@ public class GuildVoiceUpdate extends ListenerAdapter {
                 if (_members.size() >= 1) return;
                 player.destroy();
             } catch (Exception error) {
-                suzuya.errorTrace(error.getStackTrace());
+                suzuya.errorTrace(error.getMessage(), error.getStackTrace());
             } finally {
                 process.remove(guild.getId());
             }

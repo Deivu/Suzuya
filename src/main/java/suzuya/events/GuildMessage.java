@@ -81,9 +81,9 @@ public class GuildMessage extends ListenerAdapter {
         try {
             handler.channel.sendMessage(embed).queue();
         } catch (Exception _error) {
-            suzuya.errorTrace(_error.getStackTrace());
+            suzuya.errorTrace(_error.getMessage(), _error.getStackTrace());
         }
-        suzuya.errorTrace(error.getStackTrace());
+        suzuya.errorTrace(error.getMessage(), error.getStackTrace());
     }
 
     private void HandleError(Exception error, HandlerArgs handler) {
@@ -97,9 +97,9 @@ public class GuildMessage extends ListenerAdapter {
         try {
             handler.channel.sendMessage(embed).queue();
         } catch (Exception _error) {
-            suzuya.errorTrace(_error.getStackTrace());
+            suzuya.errorTrace(_error.getMessage(), _error.getStackTrace());
         }
         handler.channel.sendMessage(embed).queue();
-        suzuya.errorTrace(error.getStackTrace());
+        suzuya.errorTrace(error.getMessage(), error.getStackTrace());
     }
 }

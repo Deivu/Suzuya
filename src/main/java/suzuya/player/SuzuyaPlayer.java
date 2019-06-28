@@ -51,7 +51,7 @@ public class SuzuyaPlayer {
             if (textChannel == null) return;
             textChannel.sendMessage(message).queue();
         } catch (Exception error) {
-            suzuya.errorTrace(error.getStackTrace());
+            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
         }
     }
 
@@ -60,7 +60,7 @@ public class SuzuyaPlayer {
             if (textChannel == null) return;
             textChannel.sendMessage(embed).queue();
         } catch (Exception error) {
-            suzuya.errorTrace(error.getStackTrace());
+            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
         }
     }
 

@@ -14,6 +14,7 @@ class Sortie {
                 new GuildVerificationMessage(suzuya),
                 new GuildVoiceUpdate(suzuya),
                 new GuildMemberJoin(suzuya),
+                new GuildMemberUnverifiedLeave(suzuya),
                 new Reconnected()
         );
         suzuya.client.awaitReady();

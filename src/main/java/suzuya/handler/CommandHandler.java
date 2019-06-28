@@ -20,14 +20,13 @@ public class CommandHandler {
     private void init() {
         Reflections reflections = new Reflections("suzuya.commands");
         Set<Class<? extends BaseCommand>> subTypes = reflections.getSubTypesOf(BaseCommand.class);
-        suzuya.SuzuyaLog.info("Trying to load a total of " + subTypes.size() + " commands");
         for (Class<? extends BaseCommand> s : subTypes) {
             try {
                 BaseCommand command = s.getConstructor().newInstance();
                 commands.putIfAbsent(command.getTitle(), command);
                 suzuya.SuzuyaLog.debug("Loaded Command: " + command.getTitle());
             } catch (Exception error) {
-                suzuya.errorTrace(error.getStackTrace());
+                suzuya.errorTrace(error.getMessage(), error.getStackTrace());
             }
         }
         suzuya.SuzuyaLog.info("Loaded " + commands.size() + " commands");

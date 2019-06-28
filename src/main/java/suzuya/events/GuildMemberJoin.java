@@ -91,7 +91,7 @@ public class GuildMemberJoin extends ListenerAdapter {
                                     return null;
                                 })
                                 .exceptionally(error -> {
-                                    suzuya.errorTrace(error.getStackTrace());
+                                    suzuya.errorTrace(error.getMessage(), error.getStackTrace());
                                     return null;
                                 });
                         boolean _isExecuted = suzuya.handleRest(
@@ -122,12 +122,13 @@ public class GuildMemberJoin extends ListenerAdapter {
 
                     captcha.message = res;
                     captcha.future = Executors.newSingleThreadScheduledExecutor().schedule(captcha.runnable, 21, TimeUnit.SECONDS);
+
                     suzuya.captcha.putIfAbsent(key, captcha);
                     return null;
                 })
                 .exceptionally(error -> {
                     suzuya.captcha.remove(key);
-                    suzuya.errorTrace(error.getStackTrace());
+                    suzuya.errorTrace(error.getMessage(), error.getStackTrace());
                     return null;
                 });
     }

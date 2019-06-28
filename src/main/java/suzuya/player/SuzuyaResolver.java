@@ -57,7 +57,7 @@ public class SuzuyaResolver implements AudioLoadResultHandler {
         if (exception.severity.equals(FriendlyException.Severity.COMMON)) {
             suzuya.errorTrace(exception.getMessage());
         } else {
-            suzuya.errorTrace(exception.getStackTrace());
+            suzuya.errorTrace(exception.getMessage(), exception.getStackTrace());
         }
         this.result.complete(new SuzuyaTrack(new ArrayList<>(), null, "FAILED"));
     }
