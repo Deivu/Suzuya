@@ -25,6 +25,8 @@ public class GuildMemberJoin extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         Guild guild = event.getGuild();
         Settings config = suzuya.settingsHandler.getSettings(guild.getId());
+        if (config == null) return;
+
         if (!Boolean.parseBoolean(config.auto_ban) || config.mod_log == null) return;
         TextChannel channel = guild.getTextChannelById(config.mod_log);
         if (channel == null) return;

@@ -15,7 +15,7 @@ public class TagsHandler {
     public TagsHandler(SuzuyaClient suzuya) {
         this.suzuya = suzuya;
         this.pool = JdbcConnectionPool.create(
-                "jdbc:h2:file:" + suzuya.config.getDir() + "\\db\\SuzuyaTags;MULTI_THREADED=1",
+                "jdbc:h2:file:" + suzuya.config.getDir() + "db\\SuzuyaTags;MODE=MYSQL;MULTI_THREADED=1",
                 "",
                 ""
         );
@@ -24,11 +24,11 @@ public class TagsHandler {
 
     public void initDb() {
         String sql = "CREATE TABLE IF NOT EXISTS tags(" +
-                "user_id TEXT NOT NULL," +
-                "guild_id TEXT NOT NULL," +
-                "title TEXT NOT NULL," +
-                "content TEXT NOT NULL," +
-                "timestamp UNSIGNED BIG INT NOT NULL," +
+                "user_id VARCHAR(128) NOT NULL," +
+                "guild_id VARCHAR(128) NOT NULL," +
+                "title VARCHAR(128) NOT NULL," +
+                "content VARCHAR(2048) NOT NULL," +
+                "timestamp BIGINT NOT NULL," +
                 "UNIQUE(user_id, guild_id, title)" +
                 ")";
         try (Connection connection = pool.getConnection()) {
@@ -95,8 +95,8 @@ public class TagsHandler {
         String content = null;
         try (Connection connection = pool.getConnection()) {
             try (PreparedStatement cmd = connection.prepareStatement(sql)) {
-                cmd.setString(0, guild_id);
-                cmd.setString(1, title);
+                cmd.setString(1, guild_id);
+                cmd.setString(2, title);
                 try (ResultSet results = cmd.executeQuery()) {
                     if (results.next()) content = results.getString("content");
                 }
@@ -108,10 +108,12 @@ public class TagsHandler {
     }
 
     public Boolean setTag(String authorID, String guildID, String title, String content) {
-        String sql = "INSERT OR REPLACE INTO tags" +
-                "(user_id, guild_id, title, content, timestamp)" +
+        String sql = "INSERT INTO tags" +
+                "(user_id, guild_id, title, content, timestamp )" +
                 "VALUES" +
-                "(?, ?, ?, ?, ?)";
+                "(?, ?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE " +
+                "content = ?, timestamp = ?";
         boolean status = false;
         try (Connection connection = pool.getConnection()) {
             try (PreparedStatement cmd = connection.prepareStatement(sql)) {
@@ -120,6 +122,8 @@ public class TagsHandler {
                 cmd.setString(3, title);
                 cmd.setString(4, content);
                 cmd.setLong(5, Instant.now().getEpochSecond());
+                cmd.setString(6, content);
+                cmd.setLong(7, Instant.now().getEpochSecond());
                 int update = cmd.executeUpdate();
                 if (update > 0) status = true;
             }

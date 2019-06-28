@@ -16,7 +16,7 @@ public class SettingsHandler {
         this.suzuya = suzuya;
         this.config = suzuya.config;
         this.pool = JdbcConnectionPool.create(
-                "jdbc:h2:file:" + config.getDir() + "\\db\\SuzuyaSettings;MULTI_THREADED=1",
+                "jdbc:h2:file:" + config.getDir() + "db\\SuzuyaSettings;MODE=MYSQL;MULTI_THREADED=1",
                 "",
                 ""
         );
@@ -25,12 +25,13 @@ public class SettingsHandler {
 
     public void initDb() {
         String sql = "CREATE TABLE IF NOT EXISTS settings(" +
-                "guild_id TEXT PRIMARY KEY," +
-                "prefix TEXT NOT NULL," +
-                "mod_log TEXT," +
-                "auto_ban TEXT NOT NULL," +
-                "verification_channel TEXT," +
-                "silenced_role TEXT" +
+                "guild_id VARCHAR(128) NOT NULL," +
+                "prefix VARCHAR(5) NOT NULL," +
+                "mod_log VARCHAR(128)," +
+                "auto_ban VARCHAR(8) NOT NULL," +
+                "verification_channel VARCHAR(128)," +
+                "silenced_role VARCHAR(128)," +
+                "UNIQUE(guild_id)" +
                 ")";
         try (Connection connection = pool.getConnection()) {
             try (PreparedStatement cmd = connection.prepareStatement(sql)) {
@@ -43,7 +44,7 @@ public class SettingsHandler {
     }
 
     public void setDefaults(String guild_id) {
-        String sql = "INSERT INTO settings (guild_id, prefix, auto_ban) VALUES (?, ?, ?) ON CONFLICT(guild_id) DO UPDATE SET guild_id = guild_id";
+        String sql = "INSERT INTO settings(guild_id, prefix, auto_ban) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE guild_id = guild_id";
         try (Connection connection = pool.getConnection()) {
             try (PreparedStatement cmd = connection.prepareStatement(sql)) {
                 cmd.setString(1, guild_id);

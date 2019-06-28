@@ -20,6 +20,7 @@ public class GuildMemberUnverifiedLeave extends ListenerAdapter {
         User user = event.getUser();
         Guild guild = event.getGuild();
         Settings config = suzuya.settingsHandler.getSettings(guild.getId());
+        if (config == null) return;
 
         if (!Boolean.parseBoolean(config.auto_ban)) return;
         if (config.verification_channel == null) return;
