@@ -77,7 +77,7 @@ public class GuildMemberJoin extends ListenerAdapter {
         byte[] data = Captcha.generateImage(captcha.text);
         String key = guild.getId() + " " + user.getId();
 
-        verificationChannel.sendMessage(user.getAsMention() + " | Please verify that you are a human. You have **20 seconds** to answer.")
+        verificationChannel.sendMessage(user.getAsMention() + " | Please verify that you are a human. You have **30 seconds** to answer.")
                 .addFile(data, "data.png")
                 .submit()
                 .thenApply(res -> {
@@ -123,7 +123,7 @@ public class GuildMemberJoin extends ListenerAdapter {
                     };
 
                     captcha.message = res;
-                    captcha.future = Executors.newSingleThreadScheduledExecutor().schedule(captcha.runnable, 21, TimeUnit.SECONDS);
+                    captcha.future = Executors.newSingleThreadScheduledExecutor().schedule(captcha.runnable, 31, TimeUnit.SECONDS);
 
                     suzuya.captcha.putIfAbsent(key, captcha);
                     return null;
