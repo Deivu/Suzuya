@@ -10,7 +10,6 @@ import suzuya.SuzuyaClient;
 import suzuya.structures.CaptchaExecutor;
 import suzuya.structures.Settings;
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class GuildVerificationMessage extends ListenerAdapter {
@@ -41,8 +40,7 @@ public class GuildVerificationMessage extends ListenerAdapter {
                     .submit()
                     .thenApply(res -> {
                         suzuya.handleRest(event.getMessage().delete());
-                        Executors.newSingleThreadScheduledExecutor()
-                                .schedule(() -> suzuya.handleRest(res.delete()), 3, TimeUnit.SECONDS);
+                        suzuya.scheduler.schedule(() -> suzuya.handleRest(res.delete()), 3, TimeUnit.SECONDS);
                         return null;
                     })
                     .exceptionally(error -> {
