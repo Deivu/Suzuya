@@ -28,9 +28,11 @@ import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 public class SuzuyaClient {
@@ -50,6 +52,8 @@ public class SuzuyaClient {
     public final Runtime runtime = Runtime.getRuntime();
 
     public final JDA client = new JDABuilder(config.getToken()).build();
+
+    public final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     public Boolean isClientReady = false;
 

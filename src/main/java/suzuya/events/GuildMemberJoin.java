@@ -10,10 +10,9 @@ import suzuya.structures.CaptchaExecutor;
 import suzuya.structures.Settings;
 
 import java.time.Instant;
-import java.util.concurrent.Executors;
+import java.time.OffsetDateTime;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-import java.time.OffsetDateTime;
 
 public class GuildMemberJoin extends ListenerAdapter {
     private final SuzuyaClient suzuya;
@@ -123,7 +122,7 @@ public class GuildMemberJoin extends ListenerAdapter {
                     };
 
                     captcha.message = res;
-                    captcha.future = Executors.newSingleThreadScheduledExecutor().schedule(captcha.runnable, 31, TimeUnit.SECONDS);
+                    captcha.future = suzuya.scheduler.schedule(captcha.runnable, 31, TimeUnit.SECONDS);
 
                     suzuya.captcha.putIfAbsent(key, captcha);
                     return null;
