@@ -28,8 +28,8 @@ public class GuildMemberUnverifiedLeave extends ListenerAdapter {
         String key = guild.getId() + " " + user.getId();
         CaptchaExecutor captcha = this.suzuya.captcha.get(key);
         if (captcha == null) return;
-
-        suzuya.handleRest(captcha.message.delete());
         suzuya.captcha.remove(key);
+        captcha.future.cancel(true);
+        suzuya.handleRest(captcha.message.delete());
     }
 }

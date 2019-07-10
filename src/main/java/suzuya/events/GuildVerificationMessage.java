@@ -52,10 +52,10 @@ public class GuildVerificationMessage extends ListenerAdapter {
             return;
         }
 
-        Member member = event.getMember();
-
-        captcha.future.cancel(true);
         this.suzuya.captcha.remove(key);
+        captcha.future.cancel(true);
+
+        Member member = event.getMember();
 
         Role role = guild.getRoleById(config.silenced_role);
         if (role != null) {
