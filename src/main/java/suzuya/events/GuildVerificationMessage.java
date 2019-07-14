@@ -38,13 +38,13 @@ public class GuildVerificationMessage extends ListenerAdapter {
         if (!captcha.text.equals(event.getMessage().getContentRaw())) {
             captcha.verificationChannel.sendMessage("<:hibiki_drink:545882402401157122> Admiral **" + user.getAsTag() + "** wrong guess. Try again.")
                     .submit()
-                    .thenApply(res -> {
+                    .handleAsync((res, error) -> {
+                        if (error != null) {
+                            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                            return null;
+                        }
                         suzuya.handleRest(event.getMessage().delete());
                         suzuya.scheduler.schedule(() -> suzuya.handleRest(res.delete()), 3, TimeUnit.SECONDS);
-                        return null;
-                    })
-                    .exceptionally(error -> {
-                        suzuya.errorTrace(error.getMessage(), error.getStackTrace());
                         return null;
                     });
             return;
@@ -71,14 +71,14 @@ public class GuildVerificationMessage extends ListenerAdapter {
 
         user.openPrivateChannel()
                 .submit()
-                .thenApply(res -> {
+                .handleAsync((res, error) -> {
+                    if (error != null) {
+                        suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                        return null;
+                    }
                     suzuya.handleRest(
                             res.sendMessage("<:uzuki_pyon:545889147211218945> Yay! Admiral **" + user.getAsTag() + "**, you now have access to the **" + guild.getName() + "**")
                     );
-                    return null;
-                })
-                .exceptionally(error -> {
-                    suzuya.errorTrace(error.getMessage(), error.getStackTrace());
                     return null;
                 });
     }

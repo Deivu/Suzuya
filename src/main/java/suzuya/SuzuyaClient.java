@@ -31,6 +31,7 @@ import java.lang.management.RuntimeMXBean;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
@@ -54,6 +55,7 @@ public class SuzuyaClient {
     public final JDA client = new JDABuilder(config.getToken()).build();
 
     public final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    public final ExecutorService executors = Executors.newCachedThreadPool();
 
     public Boolean isClientReady = false;
 
