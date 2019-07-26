@@ -32,7 +32,7 @@ public class GuildMessage extends ListenerAdapter {
         String content = handler.msg.getContentRaw();
         if (!content.startsWith(config.prefix)) return;
         String[] args = content.split("\\s+");
-        String query = args[0].substring(config.prefix.length());
+        String query = args[0].substring(config.prefix.length()).toLowerCase();
         BaseCommand command = suzuya.commandHandler.getCommand(query);
         if (command == null) {
             try {

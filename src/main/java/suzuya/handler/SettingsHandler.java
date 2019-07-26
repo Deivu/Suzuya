@@ -1,7 +1,7 @@
 package suzuya.handler;
 
+import suzuya.GeneralUtil;
 import org.h2.jdbcx.JdbcConnectionPool;
-import suzuya.Config;
 import suzuya.SuzuyaClient;
 import suzuya.structures.Settings;
 import java.sql.*;
@@ -9,14 +9,12 @@ import java.util.ArrayList;
 
 public class SettingsHandler {
     private final SuzuyaClient suzuya;
-    private final Config config;
     private final JdbcConnectionPool pool;
 
     public SettingsHandler(SuzuyaClient suzuya) {
         this.suzuya = suzuya;
-        this.config = suzuya.config;
         this.pool = JdbcConnectionPool.create(
-                "jdbc:h2:file:" + config.getDir() + "db\\SuzuyaSettings;MODE=MYSQL;MULTI_THREADED=1",
+                "jdbc:h2:file:" + GeneralUtil.pathJoin("db") + "\\SuzuyaSettings;MODE=MYSQL;MULTI_THREADED=1",
                 "",
                 ""
         );
@@ -48,7 +46,7 @@ public class SettingsHandler {
         try (Connection connection = pool.getConnection()) {
             try (PreparedStatement cmd = connection.prepareStatement(sql)) {
                 cmd.setString(1, guild_id);
-                cmd.setString(2, config.getPrefix());
+                cmd.setString(2, this.suzuya.config.config.prefix);
                 cmd.setString(3, "false");
                 cmd.executeUpdate();
             }

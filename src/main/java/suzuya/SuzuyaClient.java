@@ -1,5 +1,6 @@
 package suzuya;
 
+import suzuya.config.ConfigManager;
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class SuzuyaClient {
     public final Logger SuzuyaLog = LoggerFactory.getLogger(Sortie.class);
-    public final Config config = new Config(this);
+    public final ConfigManager config = new ConfigManager(this);
     public final AudioPlayerManager PlayerManager = new DefaultAudioPlayerManager();
     public final ConcurrentHashMap<String, SuzuyaPlayer> players = new ConcurrentHashMap<>();
     public final ConcurrentHashMap<String, CaptchaExecutor> captcha = new ConcurrentHashMap<>();
@@ -52,7 +53,7 @@ public class SuzuyaClient {
     public final RuntimeMXBean runtime_mx = ManagementFactory.getRuntimeMXBean();
     public final Runtime runtime = Runtime.getRuntime();
 
-    public final JDA client = new JDABuilder(config.getToken()).build();
+    public final JDA client = new JDABuilder(config.config.token).build();
 
     public final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     public final ExecutorService executors = Executors.newCachedThreadPool();

@@ -3,6 +3,7 @@ package suzuya.handler;
 import org.h2.jdbcx.JdbcConnectionPool;
 import suzuya.SuzuyaClient;
 import suzuya.structures.Tag;
+import suzuya.GeneralUtil;
 
 import java.sql.*;
 import java.time.Instant;
@@ -15,7 +16,7 @@ public class TagsHandler {
     public TagsHandler(SuzuyaClient suzuya) {
         this.suzuya = suzuya;
         this.pool = JdbcConnectionPool.create(
-                "jdbc:h2:file:" + suzuya.config.getDir() + "db\\SuzuyaTags;MODE=MYSQL;MULTI_THREADED=1",
+                "jdbc:h2:file:" + GeneralUtil.pathJoin("db") + "\\SuzuyaTags;MODE=MYSQL;MULTI_THREADED=1",
                 "",
                 ""
         );
