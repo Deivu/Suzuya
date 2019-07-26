@@ -20,16 +20,6 @@ public class ConfigManager {
 
     private void init() {
         try {
-            suzuya.SuzuyaLog.info("Working Directory: " + GeneralUtil.pathJoin(""));
-            suzuya.SuzuyaLog.info(
-"                                                \n" +
-" ,---.                                          \n" +
-"'   .-' ,--.,--.,-----.,--.,--.,--. ,--.,--,--. \n" +
-"`.  `-. |  ||  |`-.  / |  ||  | \\  '  /' ,-.  | \n" +
-".-'    |'  ''  ' /  `-.'  ''  '  \\   ' \\ '-'  | \n" +
-"`-----'  `----' `-----' `----' .-'  /   `--`--' \n" +
-"                               `---'            \n"
-            );
             Path configpath = Paths.get(GeneralUtil.pathJoin("config.json"));
             
             if (Files.notExists(configpath)) 

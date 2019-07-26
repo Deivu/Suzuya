@@ -61,6 +61,16 @@ public class SuzuyaClient {
     public Boolean isClientReady = false;
 
     SuzuyaClient() throws LoginException {
+        this.SuzuyaLog.info("Working directory: " + GeneralUtil.pathJoin(""));
+        this.SuzuyaLog.info(
+            "                                                \n" +
+            " ,---.                                          \n" +
+            "'   .-' ,--.,--.,-----.,--.,--.,--. ,--.,--,--. \n" +
+            "`.  `-. |  ||  |`-.  / |  ||  | \\  '  /' ,-.  | \n" +
+            ".-'    |'  ''  ' /  `-.'  ''  '  \\   ' \\ '-'  | \n" +
+            "`-----'  `----' `-----' `----' .-'  /   `--`--' \n" +
+            "                               `---'            \n"
+        );
         settingsHandler.initDb();
         tagsHandler.initDb();
         setPlayerSettings();
