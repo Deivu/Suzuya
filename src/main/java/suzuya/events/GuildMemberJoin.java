@@ -10,14 +10,11 @@ import suzuya.structures.CaptchaExecutor;
 import suzuya.structures.Settings;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 public class GuildMemberJoin extends ListenerAdapter {
     private final SuzuyaClient suzuya;
-    private final Pattern pattern = Pattern.compile("([A-Z][a-z]+[0-9]{1,4}|[A-Z][a-z]+\\.([a-z]+\\.[a-z]+|[a-z]+[0-9]{1,2}))");
 
     public GuildMemberJoin(SuzuyaClient suzuya) { this.suzuya = suzuya; }
 
@@ -32,29 +29,6 @@ public class GuildMemberJoin extends ListenerAdapter {
         if (channel == null) return;
         User user = event.getUser();
         if (user.isBot()) return;
-
-        if (checkName(user) && lessThanWeek(user)) {
-            boolean isExecuted = suzuya.handleRest(guild.getController().kick(
-                    user.getId(),
-                    "Possible Spam Bot Detected")
-            );
-            if (!isExecuted) return;
-            String avatar = suzuya.client.getSelfUser().getAvatarUrl() != null ? suzuya.client.getSelfUser().getAvatarUrl() : suzuya.client.getSelfUser().getDefaultAvatarUrl();
-            MessageEmbed embed = new EmbedBuilder()
-                    .setTitle("📝 | User Kicked")
-                    .setColor(suzuya.defaultEmbedColor)
-                    .setDescription(
-                            "**• User:** " + user.getAsTag() + " `(" + user.getId() + ")`" +
-                            "\n**• Moderator:** " + suzuya.client.getSelfUser().getAsTag() +
-                            "\n**• Reason:** <:lewd:448387419092549632> Possible lewd user bot"
-                    )
-                    .setAuthor(suzuya.client.getSelfUser().getName(), avatar, avatar)
-                    .setTimestamp(Instant.now())
-                    .setFooter(guild.getName(), guild.getIconUrl() != null ? guild.getIconUrl() : avatar)
-                    .build();
-            suzuya.handleRest(channel.sendMessage(embed));
-            return;
-        }
 
         Role role = guild.getRoleById(config.silenced_role);
         if (role == null) return;
@@ -149,13 +123,5 @@ public class GuildMemberJoin extends ListenerAdapter {
                             });
                     return null;
                 });
-    }
-
-    private boolean checkName(User user) {
-        return pattern.matcher(user.getName()).matches();
-    }
-
-    private boolean lessThanWeek(User user) {
-        return user.getCreationTime().getSecond() > OffsetDateTime.now().plusDays(7).getSecond();
     }
 }
