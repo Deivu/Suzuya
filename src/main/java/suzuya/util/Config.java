@@ -1,6 +1,8 @@
-package suzuya;
+package suzuya.util;
 
 import org.json.*;
+import suzuya.Sortie;
+import suzuya.client.SuzuyaClient;
 
 import java.io.File;
 import java.io.InputStream;

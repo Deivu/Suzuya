@@ -1,4 +1,4 @@
-package suzuya;
+package suzuya.util;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

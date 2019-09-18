@@ -7,7 +7,7 @@ import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.managers.AudioManager;
-import suzuya.SuzuyaClient;
+import suzuya.client.SuzuyaClient;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -23,6 +23,7 @@ public class SuzuyaPlayer {
     private final TextChannel textChannel;
 
     public int volume = 50;
+    public AudioTrack currentTrack = null;
 
     public SuzuyaPlayer(SuzuyaClient suzuya, TextChannel textChannel, VoiceChannel voiceChannel) {
         this.suzuya = suzuya;

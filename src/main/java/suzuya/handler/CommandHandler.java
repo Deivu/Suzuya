@@ -1,7 +1,7 @@
 package suzuya.handler;
 
 import org.reflections.Reflections;
-import suzuya.SuzuyaClient;
+import suzuya.client.SuzuyaClient;
 import suzuya.structures.BaseCommand;
 
 import java.util.ArrayList;

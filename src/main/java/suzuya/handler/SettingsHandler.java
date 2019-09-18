@@ -1,8 +1,8 @@
 package suzuya.handler;
 
 import org.h2.jdbcx.JdbcConnectionPool;
-import suzuya.Config;
-import suzuya.SuzuyaClient;
+import suzuya.util.Config;
+import suzuya.client.SuzuyaClient;
 import suzuya.structures.Settings;
 import java.sql.*;
 import java.util.ArrayList;

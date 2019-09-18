@@ -1,4 +1,4 @@
-package suzuya;
+package suzuya.client;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -17,6 +17,8 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.requests.RestAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import suzuya.util.Config;
+import suzuya.Sortie;
 import suzuya.handler.CommandHandler;
 import suzuya.handler.SettingsHandler;
 import suzuya.handler.TagsHandler;
@@ -59,7 +61,7 @@ public class SuzuyaClient {
 
     public Boolean isClientReady = false;
 
-    SuzuyaClient() throws LoginException {
+    public SuzuyaClient() throws LoginException {
         settingsHandler.initDb();
         tagsHandler.initDb();
         setPlayerSettings();
@@ -71,7 +73,7 @@ public class SuzuyaClient {
         audioConfig.setOpusEncodingQuality(10);
         SuzuyaLog.info("AudioPlayer settings are now set.");
         YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager();
-        youtube.setPlaylistPageCount(500);
+        youtube.setPlaylistPageCount(1000);
         PlayerManager.registerSourceManager(youtube);
         PlayerManager.registerSourceManager(new BandcampAudioSourceManager());
         PlayerManager.registerSourceManager(new SoundCloudAudioSourceManager());
