@@ -2,12 +2,17 @@ package suzuya.commands;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.requests.RequestFuture;
 import suzuya.player.SuzuyaResolver;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
 import suzuya.player.SuzuyaPlayer;
+import suzuya.structures.SuzuyaTrack;
+
+import java.util.concurrent.CompletableFuture;
 
 public class Play extends BaseCommand {
 
@@ -47,49 +52,55 @@ public class Play extends BaseCommand {
         if (voiceChannel == null)
             return "Admiral, "+ handler.me.getName() +" knows you aren't in a voice channel, dummy.";
         String url = args[1];
-        if (handler.suzuya.players.containsKey(handler.guild.getId())) {
-            new SuzuyaResolver(handler.suzuya).resolve(url)
-                    .thenApply(res -> {
-                        if (res.result.equals("NO_MATCHES") || res.result.equals("FAILED")) {
-                            handler.suzuya.handleRest(handler.channel.sendMessage("Admiral, seems like I cannot load this track after all."));
-                            return null;
-                        }
-                        SuzuyaPlayer suzuyaPlayer = handler.suzuya.players.get(handler.guild.getId());
-                        if (res.result.equals("PLAYLIST")) {
-                            for (AudioTrack track : res.tracks) {
-                                suzuyaPlayer.queue.offer(track);
-                            }
-                            handler.suzuya.handleRest(handler.channel.sendMessage("Added the playlist **" + res.playlist + "** to the queue"));
-                            return null;
-                        }
-                        AudioTrack _track = res.tracks.get(0);
-                        suzuyaPlayer.queue.offer(_track);
-                        handler.suzuya.handleRest(handler.channel.sendMessage("Added the track **" + _track.getInfo().title + "** to the queue"));
-                        return null;
-                    });
-            return null;
-        }
-        new SuzuyaResolver(handler.suzuya).resolve(url)
-                .thenApply(res -> {
-                    if (res.result.equals("NO_MATCHES") || res.result.equals("FAILED")) {
-                        handler.suzuya.handleRest(handler.channel.sendMessage("Admiral, seems like I cannot load this track after all."));
+        RequestFuture<Message> sentMessage = handler.channel.sendMessage("Trying to find the query you gave me....").submit();
+        sentMessage.thenApplyAsync(message -> {
+            CompletableFuture<SuzuyaTrack> request = new SuzuyaResolver(handler.suzuya).resolve(url);
+            request.thenApplyAsync(data -> {
+                try {
+                    if (data.result.equals("NO_MATCHES") || data.result.equals("FAILED")) {
+                        handler.suzuya.handleRest(message.editMessage("Admiral, seems like I cannot load this track after all."));
                         return null;
                     }
-                    SuzuyaPlayer suzuyaPlayer = new SuzuyaPlayer(handler.suzuya, handler.channel, voiceChannel);
-                    if (res.result.equals("PLAYLIST")) {
-                        for (AudioTrack track : res.tracks) {
+
+                    SuzuyaPlayer suzuyaPlayer = handler.suzuya.players.get(handler.guild.getId());
+                    boolean executePlayTrack = false;
+                    if (suzuyaPlayer == null) {
+                        suzuyaPlayer = new SuzuyaPlayer(handler.suzuya, handler.channel, voiceChannel);
+                        executePlayTrack = true;
+                    }
+
+                    if (data.result.equals("PLAYLIST")) {
+                        for (AudioTrack track : data.tracks) {
                             suzuyaPlayer.queue.offer(track);
                         }
-                        suzuyaPlayer.player.playTrack(suzuyaPlayer.queue.poll());
-                        handler.suzuya.handleRest(handler.channel.sendMessage("Added the playlist **" + res.playlist + "** to the queue"));
+                        handler.suzuya.handleRest(message.editMessage("Loaded the playlist `" + data.playlist + "`"));
+                        if (executePlayTrack)
+                            suzuyaPlayer.player.playTrack(suzuyaPlayer.queue.poll());
                         return null;
                     }
-                    AudioTrack _track = res.tracks.get(0);
-                    suzuyaPlayer.queue.offer(_track);
-                    suzuyaPlayer.player.playTrack(suzuyaPlayer.queue.poll());
-                    handler.suzuya.handleRest(handler.channel.sendMessage("Added the track **" + _track.getInfo().title + "** to the queue"));
-                    return null;
-                });
+
+                    AudioTrack track = data.tracks.get(0);
+                    suzuyaPlayer.queue.offer(track);
+                    handler.suzuya.handleRest(message.editMessage("Loaded the track `" + track.getInfo().title + "`"));
+                    if (executePlayTrack)
+                        suzuyaPlayer.player.playTrack(suzuyaPlayer.queue.poll());
+                } catch (Exception error) {
+                    handler.suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                }
+                return null;
+            });
+            request.exceptionally((error) -> {
+                handler.suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                handler.suzuya.handleRest(message.editMessage("An error occured when trying to add the track. Error Message:\n`" + error.getMessage() + "`"));
+                return null;
+            });
+            return null;
+        });
+        sentMessage.exceptionally((error) -> {
+            handler.suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+            handler.suzuya.handleRest(handler.channel.sendMessage("An error occured when trying to add the track. Error Message:\n`" + error.getMessage() + "`"));
+            return null;
+        });
         return null;
     }
 }

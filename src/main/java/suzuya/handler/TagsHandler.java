@@ -1,7 +1,7 @@
 package suzuya.handler;
 
 import org.h2.jdbcx.JdbcConnectionPool;
-import suzuya.SuzuyaClient;
+import suzuya.client.SuzuyaClient;
 import suzuya.structures.Tag;
 import suzuya.GeneralUtil;
 

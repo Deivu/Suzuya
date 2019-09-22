@@ -1,4 +1,4 @@
-package suzuya;
+package suzuya.client;
 
 import suzuya.config.ConfigManager;
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
@@ -18,6 +18,8 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.requests.RestAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import suzuya.util.Config;
+import suzuya.Sortie;
 import suzuya.handler.CommandHandler;
 import suzuya.handler.SettingsHandler;
 import suzuya.handler.TagsHandler;
@@ -39,7 +41,7 @@ import java.util.stream.Collectors;
 
 public class SuzuyaClient {
     public final Logger SuzuyaLog = LoggerFactory.getLogger(Sortie.class);
-    public final ConfigManager config = new ConfigManager(this);
+    public final Config config = new Config(this);
     public final AudioPlayerManager PlayerManager = new DefaultAudioPlayerManager();
     public final ConcurrentHashMap<String, SuzuyaPlayer> players = new ConcurrentHashMap<>();
     public final ConcurrentHashMap<String, CaptchaExecutor> captcha = new ConcurrentHashMap<>();
@@ -53,24 +55,14 @@ public class SuzuyaClient {
     public final RuntimeMXBean runtime_mx = ManagementFactory.getRuntimeMXBean();
     public final Runtime runtime = Runtime.getRuntime();
 
-    public final JDA client = new JDABuilder(config.config.token).build();
+    public final JDA client = new JDABuilder(config.getToken()).build();
 
     public final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     public final ExecutorService executors = Executors.newCachedThreadPool();
 
     public Boolean isClientReady = false;
 
-    SuzuyaClient() throws LoginException {
-        this.SuzuyaLog.info("Working directory: " + GeneralUtil.pathJoin(""));
-        this.SuzuyaLog.info(
-            "                                                \n" +
-            " ,---.                                          \n" +
-            "'   .-' ,--.,--.,-----.,--.,--.,--. ,--.,--,--. \n" +
-            "`.  `-. |  ||  |`-.  / |  ||  | \\  '  /' ,-.  | \n" +
-            ".-'    |'  ''  ' /  `-.'  ''  '  \\   ' \\ '-'  | \n" +
-            "`-----'  `----' `-----' `----' .-'  /   `--`--' \n" +
-            "                               `---'            \n"
-        );
+    public SuzuyaClient() throws LoginException {
         settingsHandler.initDb();
         tagsHandler.initDb();
         setPlayerSettings();
@@ -82,7 +74,7 @@ public class SuzuyaClient {
         audioConfig.setOpusEncodingQuality(10);
         SuzuyaLog.info("AudioPlayer settings are now set.");
         YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager();
-        youtube.setPlaylistPageCount(500);
+        youtube.setPlaylistPageCount(1000);
         PlayerManager.registerSourceManager(youtube);
         PlayerManager.registerSourceManager(new BandcampAudioSourceManager());
         PlayerManager.registerSourceManager(new SoundCloudAudioSourceManager());

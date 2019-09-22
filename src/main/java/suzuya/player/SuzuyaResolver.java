@@ -5,7 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import suzuya.SuzuyaClient;
+import suzuya.client.SuzuyaClient;
 import suzuya.structures.SuzuyaTrack;
 
 import java.util.ArrayList;
