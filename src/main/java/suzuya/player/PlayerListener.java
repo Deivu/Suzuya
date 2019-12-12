@@ -42,7 +42,7 @@ class PlayerListener extends AudioEventAdapter {
                 .setTitle("\\▶ Now Playing")
                 .setDescription("`" + track.getInfo().title + "`")
                 .setThumbnail(thumbnail)
-                .setFooter("\uD83C\uDFB5 | Song Length: " + TimeUtil.getDurationBreakdown(track.getDuration(), false), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
+                .setFooter("\uD83C\uDFB5 | " + TimeUtil.getDurationBreakdown(track.getDuration(), false), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
                 .setTimestamp(Instant.now())
                 .build();
         suzuyaPlayer.handleMessage(embed);
@@ -53,13 +53,11 @@ class PlayerListener extends AudioEventAdapter {
         suzuyaPlayer.currentTrack = null;
         if (endReason.name().equals("REPLACED")) return;
         if (suzuyaPlayer.queue.size() == 0) {
-            suzuyaPlayer.queue.clear();
             MessageEmbed embed = new EmbedBuilder()
                     .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
                     .setTitle("\\\u23F9 Queue is empty")
                     .setDescription("Player cleaned up. You are free to start a new one again.")
                     .setFooter(me.getName(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
-                    .setTimestamp(Instant.now())
                     .build();
             suzuyaPlayer.handleMessage(embed);
             suzuyaPlayer.destroy();

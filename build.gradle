@@ -14,6 +14,7 @@ sourceCompatibility = 1.9
 repositories {
     jcenter()
     mavenCentral()
+    maven { url "https://jitpack.io" }
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -44,7 +45,7 @@ dependencies {
     compile("net.dv8tion:JDA:3.8.3_464")
     compile("org.reflections:reflections:0.9.11")
     compile("org.apache.commons:commons-lang3:3.8.1")
-    compile("com.sedmelluq:lavaplayer:1.3.22")
+    compile("com.sedmelluq:lavaplayer:1.3.32")
     compile("org.json:json:20180813")
 }
 
