@@ -8,7 +8,7 @@ The ShipGirl Project. Suzuya, my random Java learning project. ``(c) Kancolle fo
 Suzuya is just a good girl tbh, 10/10 would love Suzuya.
 
 ### Configuring Suzuya
-1. Download the latest jar file at our [`CI SERVER`](https://amanogawa.moe/jenkins/job/Suzuya/ws/build/libs/)
+1. Download the latest jar file at our [`Github Releases`](https://github.com/Deivu/Suzuya/releases)
 
 2. You need a config.json file on where the suzuya.jar file is
 
