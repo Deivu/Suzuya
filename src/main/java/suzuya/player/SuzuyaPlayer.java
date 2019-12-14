@@ -2,11 +2,9 @@ package suzuya.player;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.managers.AudioManager;
+import net.dv8tion.jda.core.requests.RequestFuture;
 import suzuya.client.SuzuyaClient;
 
 import java.util.concurrent.BlockingQueue;
@@ -47,22 +45,19 @@ public class SuzuyaPlayer {
         player.setVolume(this.volume);
     }
 
-    public void handleMessage(String message) {
-        try {
-            if (textChannel == null) return;
-            textChannel.sendMessage(message).queue();
-        } catch (Exception error) {
-            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
-        }
+    void handleMessage(MessageEmbed embed) {
+        if (textChannel == null) return;
+        textChannel.sendMessage(embed).queue();
     }
 
-    public void handleMessage(MessageEmbed embed) {
-        try {
-            if (textChannel == null) return;
-            textChannel.sendMessage(embed).queue();
-        } catch (Exception error) {
-            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
-        }
+    RequestFuture<Message> handleMessageFuture(MessageEmbed embed) {
+        if (textChannel == null) return null;
+        return textChannel.sendMessage(embed).submit();
+    }
+
+    void editMessage(String messageID, MessageEmbed embed) {
+        if (textChannel == null) return;
+        textChannel.editMessageById(messageID, embed).queue();
     }
 
     public void destroy() {

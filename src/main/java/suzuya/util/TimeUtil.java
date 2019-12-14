@@ -88,4 +88,9 @@ public class TimeUtil {
     public static String getStringFromMillis(final Number millis) {
         return FORMATTER.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(millis.longValue()), ZoneId.systemDefault()));
     }
+
+    public static String musicFormatTime(long ms) {
+        ms = ms / 1000;
+        return (ms - (ms %= 60)) / 60 + (9 < ms ? ":" : ":0") + ms;
+    }
 }
