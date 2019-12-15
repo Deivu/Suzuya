@@ -1,9 +1,9 @@
 package suzuya.events;
 
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import suzuya.client.SuzuyaClient;
 import suzuya.structures.CaptchaExecutor;
 import suzuya.structures.Settings;
@@ -32,6 +32,6 @@ public class GuildMemberUnverifiedLeave extends ListenerAdapter {
 
         suzuya.captcha.remove(key);
         captcha.future.cancel(true);
-        suzuya.handleRest(captcha.message.delete());
+        captcha.message.delete().queue();
     }
 }

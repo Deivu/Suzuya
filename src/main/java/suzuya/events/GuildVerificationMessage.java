@@ -1,11 +1,11 @@
 package suzuya.events;
 
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import suzuya.client.SuzuyaClient;
 import suzuya.structures.CaptchaExecutor;
 import suzuya.structures.Settings;
@@ -45,8 +45,8 @@ public class GuildVerificationMessage extends ListenerAdapter {
                             suzuya.errorTrace(error.getMessage(), error.getStackTrace());
                             return null;
                         }
-                        suzuya.handleRest(event.getMessage().delete());
-                        suzuya.scheduler.schedule(() -> suzuya.handleRest(res.delete()), 3, TimeUnit.SECONDS);
+                        event.getMessage().delete().queue();
+                        suzuya.scheduler.schedule(() -> res.delete().queue(), 3, TimeUnit.SECONDS);
                         return null;
                     });
             return;
@@ -58,14 +58,16 @@ public class GuildVerificationMessage extends ListenerAdapter {
 
         Member member = event.getMember();
 
+        if (member == null) return;
+
         Role role = guild.getRoleById(config.silenced_role);
         if (role != null) {
-            suzuya.handleRest(guild.getController().removeSingleRoleFromMember(member, role).reason("Completed the verification."));
+            guild.removeRoleFromMember(member, role).reason("Completed the verification.").queue();
         }
 
-        suzuya.handleRest(captcha.message.delete());
-        suzuya.handleRest(event.getMessage().delete());
-        suzuya.handleRest(captcha.verificationChannel.sendMessage("<:uzuki_pyon:545889147211218945> Admiral **" + user.getAsTag() + "**, now have access to the guild."));
+        captcha.message.delete().queue();
+        event.getMessage().delete().queue();
+        captcha.verificationChannel.sendMessage("<:uzuki_pyon:545889147211218945> Admiral **" + user.getAsTag() + "**, now have access to the guild.").queue();
 
         user.openPrivateChannel()
                 .submit()
@@ -74,7 +76,7 @@ public class GuildVerificationMessage extends ListenerAdapter {
                         suzuya.errorTrace(error.getMessage(), error.getStackTrace());
                         return null;
                     }
-                    suzuya.handleRest(res.sendMessage("<:uzuki_pyon:545889147211218945> Yay! Admiral **" + user.getAsTag() + "**, you now have access to the **" + guild.getName() + "**"));
+                    res.sendMessage("<:uzuki_pyon:545889147211218945> Yay! Admiral **" + user.getAsTag() + "**, you now have access to the **" + guild.getName() + "**").queue();
                     return null;
                 });
     }

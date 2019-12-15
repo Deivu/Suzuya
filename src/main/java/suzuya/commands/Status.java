@@ -1,8 +1,9 @@
 package suzuya.commands;
 
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.JDAInfo;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
@@ -75,6 +76,8 @@ public class Status extends BaseCommand {
                                 "= System Statistics = \n" +
                                 "CPU Usage           :: " + cpu_usage + " %" + "\n" +
                                 "Memory Usage        :: " + system_used + " / " + system_total + "\n" +
+                                "= JDA Info = \n" +
+                                "Version             :: " + JDAInfo.VERSION + "\n" +
                                 "```"
                 )
                 .addField("• Suzuya || The Shipgirl Project", "Made possible by [JDA](https://github.com/DV8FromTheWorld/JDA) and [Lavaplayer](https://github.com/sedmelluq/lavaplayer). Developed with \\❤ by [Saya](https://github.com/Deivu)", false)

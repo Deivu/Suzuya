@@ -12,10 +12,9 @@ import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceMan
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sun.management.OperatingSystemMXBean;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.requests.RestAction;
-import org.apache.http.client.config.RequestConfig;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import suzuya.util.Config;
@@ -31,7 +30,6 @@ import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,15 +101,8 @@ public class SuzuyaClient {
         SuzuyaLog.error(trace.toString());
     }
 
-    public void errorTrace(String message) { SuzuyaLog.error(message); }
-
-    public boolean handleRest(RestAction action) {
-        try {
-            action.queue();
-            return true;
-        } catch (Exception error) {
-            this.errorTrace(error.getMessage(), error.getStackTrace());
-            return false;
-        }
+    public void errorTrace(String message) {
+        if (message == null) return;
+        SuzuyaLog.error(message);
     }
 }

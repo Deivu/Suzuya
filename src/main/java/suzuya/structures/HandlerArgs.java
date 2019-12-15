@@ -1,7 +1,7 @@
 package suzuya.structures;
 
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import suzuya.client.SuzuyaClient;
 
 public class HandlerArgs {

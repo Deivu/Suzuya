@@ -3,7 +3,7 @@ package suzuya.commands;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
-import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.api.Permission;
 
 public class DeleteTag extends BaseCommand {
 
