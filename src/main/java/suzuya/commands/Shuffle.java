@@ -1,7 +1,7 @@
 package suzuya.commands;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.api.Permission;
 import suzuya.player.SuzuyaPlayer;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
@@ -43,10 +43,10 @@ public class Shuffle extends BaseCommand {
     public String run(HandlerArgs handler, Settings config, String[] args) {
         if (!handler.suzuya.players.containsKey(handler.guild.getId()))
             return "Admiral, " + handler.me.getName() + " wont shuffle anything if there is nothing to skip.";
-        if (handler.member.getVoiceState().getChannel() == null)
+        if (Objects.requireNonNull(handler.member.getVoiceState()).getChannel() == null)
             return "Admiral, " + handler.me.getName() + " knows you aren't in a voice channel, dummy.";
         SuzuyaPlayer suzuyaPlayer = handler.suzuya.players.get(handler.guild.getId());
-        if (!handler.member.getVoiceState().getChannel().getId().equals(suzuyaPlayer.voiceChannel.getId()))
+        if (!Objects.requireNonNull(handler.member.getVoiceState().getChannel()).getId().equals(suzuyaPlayer.voiceChannel.getId()))
             return "Admiral, " + handler.me.getName() + " won't let you shuffle anything if you are not in the same voice channel where I am";
         List<AudioTrack> list = new ArrayList<>();
         suzuyaPlayer.queue.drainTo(list);

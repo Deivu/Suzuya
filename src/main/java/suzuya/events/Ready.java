@@ -1,9 +1,9 @@
 package suzuya.events;
 
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.events.ReadyEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import suzuya.client.SuzuyaClient;
 
 import java.util.concurrent.TimeUnit;
@@ -36,7 +36,7 @@ public class Ready extends ListenerAdapter {
                         suzuya.client.getUserCache().size()
                 )
         );
-        suzuya.scheduler.scheduleAtFixedRate(() -> suzuya.client.getPresence().setGame(Game.playing(getStatus())), 0, 120, TimeUnit.SECONDS);
+        suzuya.scheduler.scheduleAtFixedRate(() -> suzuya.client.getPresence().setActivity(Activity.playing(getStatus())), 0, 120, TimeUnit.SECONDS);
         suzuya.isClientReady = true;
     }
 

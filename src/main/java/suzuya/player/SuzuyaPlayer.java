@@ -2,12 +2,12 @@ package suzuya.player;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.managers.AudioManager;
-import net.dv8tion.jda.core.requests.RequestFuture;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.managers.AudioManager;
 import suzuya.client.SuzuyaClient;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class SuzuyaPlayer {
@@ -50,7 +50,7 @@ public class SuzuyaPlayer {
         textChannel.sendMessage(embed).queue();
     }
 
-    RequestFuture<Message> handleMessageFuture(MessageEmbed embed) {
+    CompletableFuture<Message> handleMessageFuture(MessageEmbed embed) {
         if (textChannel == null) return null;
         return textChannel.sendMessage(embed).submit();
     }

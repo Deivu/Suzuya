@@ -3,9 +3,9 @@
   <img src="https://vignette.wikia.nocookie.net/kancolle/images/4/4f/Suzuya_Carrier_Kai_Ni_Winter_2018_Event_Full.png/revision/latest">
 </p>
 
-The ShipGirl Project. Suzuya, my random Java learning project. ``(c) Kancolle for Suzuya.``
+The ShipGirl Project. Suzuya. ``(c) Kancolle for Suzuya.``
 
-Suzuya is just a good girl tbh, 10/10 would love Suzuya.
+10/10, Certified ShipGirl Waifu.
 
 ### Configuring Suzuya
 1. Download the latest jar file at our [`Github Releases`](https://github.com/Deivu/Suzuya/releases)

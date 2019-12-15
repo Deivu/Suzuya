@@ -5,12 +5,14 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.SelfUser;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.SelfUser;
 import suzuya.util.TimeUtil;
 
 import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -70,15 +72,15 @@ class PlayerListener extends AudioEventAdapter {
                 .setThumbnail(thumbnail)
                 .setFooter("Uploader: " + track.getInfo().author , null)
                 .setTimestamp(Instant.now());
-        suzuyaPlayer.handleMessageFuture(playingEmbed.build())
-                .exceptionally(error -> {
-                    suzuyaPlayer.suzuya.errorTrace(error.getMessage(), error.getStackTrace());
-                    return null;
-                })
-                .thenAcceptAsync(message -> {
+        CompletableFuture<Message> sent = suzuyaPlayer.handleMessageFuture(playingEmbed.build());
+        sent.thenAcceptAsync(message -> {
                     messageID = message.getId();
                     editCron = this.suzuyaPlayer.suzuya.scheduler.scheduleAtFixedRate(this::onTrackUpdate, 5, 5, TimeUnit.SECONDS);
                 });
+        sent.exceptionally(error -> {
+            suzuyaPlayer.suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+            return null;
+        });
     }
 
     @Override

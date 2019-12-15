@@ -1,6 +1,6 @@
 package suzuya.commands;
 
-import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.api.Permission;
 import org.apache.commons.lang3.StringUtils;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
