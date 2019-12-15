@@ -20,8 +20,8 @@ public class SuzuyaPlayer {
     private final AudioManager audioManager;
     private final TextChannel textChannel;
 
-    public int volume = 50;
-    public AudioTrack currentTrack = null;
+    int volume = 50;
+    AudioTrack currentTrack = null;
 
     public SuzuyaPlayer(SuzuyaClient suzuya, TextChannel textChannel, VoiceChannel voiceChannel) {
         this.suzuya = suzuya;
@@ -65,5 +65,34 @@ public class SuzuyaPlayer {
         player.destroy();
         audioManager.closeAudioConnection();
         suzuya.players.remove(guild.getId());
+    }
+
+    String playingStatus() {
+        if (player.getPlayingTrack() != null && !player.isPaused()) return "▶️";
+        if (player.isPaused()) return "⏸️";
+        if (queue.size() == 0) return "⏹";
+        return "⏭️";
+    }
+
+    String formatBar(Boolean ended) {
+        long pos = ended ? currentTrack.getDuration() : currentTrack.getPosition();
+        double progress = (double) pos / currentTrack.getDuration();
+        int limit = 8;
+        StringBuilder str = new StringBuilder();
+        for(int i = 0; i < limit; i++) {
+            if (i == (int) (progress * limit)) {
+                str.append("\uD83D\uDD18");
+            } else {
+                str.append("▬");
+            }
+        }
+        return str.toString();
+    }
+
+    String volumeIcon() {
+        if(volume == 0) return "\uD83D\uDD07";
+        if(volume < 30) return "\uD83D\uDD08";
+        if(volume < 70) return "\uD83D\uDD09";
+        return "\uD83D\uDD0A";
     }
 }

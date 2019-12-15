@@ -39,17 +39,34 @@ class PlayerListener extends AudioEventAdapter {
         if (suzuyaPlayer.volume != player.getVolume()) player.setVolume(suzuyaPlayer.volume);
         String thumbnail = me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl();
         if (track.getSourceManager().getSourceName().equals("youtube")) thumbnail = "https://img.youtube.com/vi/" + track.getInfo().identifier + "/0.jpg";
+
         String startTime = TimeUtil.musicFormatTime(0);
         String endTime = TimeUtil.musicFormatTime(track.getDuration());
+        String desc = "\\" +
+                suzuyaPlayer.playingStatus() +
+                " " +
+                "`" +
+                startTime +
+                "`" +
+                " " +
+                suzuyaPlayer.formatBar(false) +
+                " " +
+                "`" +
+                endTime +
+                "`" +
+                " " +
+                "\\" +
+                suzuyaPlayer.volumeIcon() +
+                " " +
+                "`" +
+                suzuyaPlayer.volume +
+                "%`";
+
         playingEmbed = new EmbedBuilder()
                 .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
                 .setTitle("\\\uD83D\uDD17 Track Link", "https://www.youtube.com/watch?v=" + track.getInfo().identifier)
-                .setDescription("\\▶️ `" + startTime + "/" + endTime + "` | \\\uD83D\uDD0A `" + suzuyaPlayer.volume + "%`")
-                .addField(
-                        "Now Playing",
-                        "`" + track.getInfo().title + "`",
-                        false
-                )
+                .setDescription(desc)
+                .addField("Now Playing", "`" + track.getInfo().title + "`", false)
                 .setThumbnail(thumbnail)
                 .setFooter("Uploader: " + track.getInfo().author , null)
                 .setTimestamp(Instant.now());
@@ -74,7 +91,6 @@ class PlayerListener extends AudioEventAdapter {
                     .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
                     .setTitle("\\⏏ Queue is empty")
                     .setDescription("Player cleaned up. You are free to start a new one again.")
-                    .setFooter(me.getName(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
                     .build();
             suzuyaPlayer.handleMessage(embed);
             suzuyaPlayer.destroy();
@@ -97,7 +113,6 @@ class PlayerListener extends AudioEventAdapter {
                 .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
                 .setTitle("\\❌ Player Error, Skipping the track.")
                 .setDescription("```" + friendlyError + "```")
-                .setFooter(me.getName(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
                 .setTimestamp(Instant.now())
                 .build();
         suzuyaPlayer.handleMessage(embed);
@@ -112,7 +127,6 @@ class PlayerListener extends AudioEventAdapter {
                     .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
                     .setTitle("\\⏏ Queue is empty")
                     .setDescription("Player cleaned up. You are free to start a new one again.")
-                    .setFooter(me.getName(), me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl())
                     .setTimestamp(Instant.now())
                     .build();
             suzuyaPlayer.handleMessage(embed);
@@ -131,7 +145,26 @@ class PlayerListener extends AudioEventAdapter {
         if (suzuyaPlayer.player.isPaused()) return;
         String startTime = TimeUtil.musicFormatTime(suzuyaPlayer.currentTrack.getPosition());
         String endTime = TimeUtil.musicFormatTime(suzuyaPlayer.currentTrack.getDuration());
-        playingEmbed.setDescription("\\▶️ `" + startTime + "/" + endTime + "` | \\\uD83D\uDD0A `" + suzuyaPlayer.volume + "%`");
+        String desc = "\\" +
+                suzuyaPlayer.playingStatus() +
+                " " +
+                "`" +
+                startTime +
+                "`" +
+                " " +
+                suzuyaPlayer.formatBar(false) +
+                " " +
+                "`" +
+                endTime +
+                "`" +
+                " " +
+                "\\" +
+                suzuyaPlayer.volumeIcon() +
+                " " +
+                "`" +
+                suzuyaPlayer.volume +
+                "%`";
+        playingEmbed.setDescription(desc);
         suzuyaPlayer.editMessage(messageID, playingEmbed.build());
     }
 
@@ -140,11 +173,26 @@ class PlayerListener extends AudioEventAdapter {
         editCron.cancel(true);
         if (playingEmbed == null || messageID == null || suzuyaPlayer.currentTrack == null) return;
         String endTime = TimeUtil.musicFormatTime(suzuyaPlayer.currentTrack.getDuration());
-        if (suzuyaPlayer.queue.size() == 0) {
-            playingEmbed.setDescription("\\⏹  `" + endTime + "/" + endTime + "` | \\\uD83D\uDD0A `" + suzuyaPlayer.volume + "%`");
-        } else {
-            playingEmbed.setDescription("\\⏭  `" + endTime + "/" + endTime + "` | \\\uD83D\uDD0A `" + suzuyaPlayer.volume + "%`");
-        }
+        String desc = "\\" +
+                suzuyaPlayer.playingStatus() +
+                " " +
+                "`" +
+                endTime +
+                "`" +
+                " " +
+                suzuyaPlayer.formatBar(true) +
+                " " +
+                "`" +
+                endTime +
+                "`" +
+                " " +
+                "\\" +
+                suzuyaPlayer.volumeIcon() +
+                " " +
+                "`" +
+                suzuyaPlayer.volume +
+                "%`";
+        playingEmbed.setDescription(desc);
         suzuyaPlayer.editMessage(messageID, playingEmbed.build());
         messageID = null;
         playingEmbed = null;
