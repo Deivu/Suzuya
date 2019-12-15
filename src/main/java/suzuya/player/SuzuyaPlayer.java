@@ -77,14 +77,12 @@ public class SuzuyaPlayer {
     String formatBar(Boolean ended) {
         long pos = ended ? currentTrack.getDuration() : currentTrack.getPosition();
         double progress = (double) pos / currentTrack.getDuration();
-        int limit = 8;
+        int limit = 9;
+        int curr = (int)(progress * limit);
         StringBuilder str = new StringBuilder();
-        for(int i = 0; i < limit; i++) {
-            if (i == (int) (progress * limit)) {
-                str.append("\uD83D\uDD18");
-            } else {
-                str.append("▬");
-            }
+        for (int i = 0; i < limit + 1; i++) {
+            if (i == curr) str.append("\uD83D\uDD18");
+            else str.append("▬");
         }
         return str.toString();
     }
