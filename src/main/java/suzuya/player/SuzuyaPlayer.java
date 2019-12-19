@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.managers.AudioManager;
 import suzuya.client.SuzuyaClient;
+import suzuya.structures.SuzuyaPlayerTrack;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
@@ -12,16 +13,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class SuzuyaPlayer {
     public final SuzuyaClient suzuya;
-    public final BlockingQueue<AudioTrack> queue = new LinkedBlockingQueue<>();
+    public final BlockingQueue<SuzuyaPlayerTrack> queue = new LinkedBlockingQueue<>();
     public final AudioPlayer player;
     public final VoiceChannel voiceChannel;
+    public SuzuyaPlayerTrack currentTrack = null;
 
     private final Guild guild;
     private final AudioManager audioManager;
     private final TextChannel textChannel;
 
     int volume = 50;
-    AudioTrack currentTrack = null;
 
     public SuzuyaPlayer(SuzuyaClient suzuya, TextChannel textChannel, VoiceChannel voiceChannel) {
         this.suzuya = suzuya;
@@ -38,6 +39,11 @@ public class SuzuyaPlayer {
         }
         player.setFrameBufferDuration(500);
         suzuya.players.putIfAbsent(guild.getId(), this);
+    }
+
+    public void startPlaying(SuzuyaPlayerTrack suzuyaPlayerTrack) {
+        currentTrack = suzuyaPlayerTrack;
+        player.startTrack(suzuyaPlayerTrack.track, false);
     }
 
     public void setVolume(int volume) {
@@ -75,8 +81,9 @@ public class SuzuyaPlayer {
     }
 
     String formatBar(Boolean ended) {
-        long pos = ended ? currentTrack.getDuration() : currentTrack.getPosition();
-        double progress = (double) pos / currentTrack.getDuration();
+        AudioTrack current = currentTrack.track == null ? player.getPlayingTrack() : currentTrack.track;
+        long pos = ended ? current.getDuration() : current.getPosition();
+        double progress = (double) pos / current.getDuration();
         int limit = 9;
         int curr = (int)(progress * limit);
         StringBuilder str = new StringBuilder();

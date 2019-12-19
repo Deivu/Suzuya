@@ -37,7 +37,6 @@ class PlayerListener extends AudioEventAdapter {
 
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
-        suzuyaPlayer.currentTrack = track;
         if (suzuyaPlayer.volume != player.getVolume()) player.setVolume(suzuyaPlayer.volume);
         String thumbnail = me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl();
         if (track.getSourceManager().getSourceName().equals("youtube")) thumbnail = "https://img.youtube.com/vi/" + track.getInfo().identifier + "/0.jpg";
@@ -98,7 +97,7 @@ class PlayerListener extends AudioEventAdapter {
             suzuyaPlayer.destroy();
             return;
         }
-        player.startTrack(suzuyaPlayer.queue.poll(), false);
+        suzuyaPlayer.startPlaying(suzuyaPlayer.queue.poll());
     }
 
     @Override
@@ -135,7 +134,7 @@ class PlayerListener extends AudioEventAdapter {
             suzuyaPlayer.destroy();
             return;
         }
-        player.startTrack(suzuyaPlayer.queue.poll(), false);
+        suzuyaPlayer.startPlaying(suzuyaPlayer.queue.poll());
     }
     
     private void onTrackUpdate() {
@@ -145,8 +144,9 @@ class PlayerListener extends AudioEventAdapter {
             return;
         }
         if (suzuyaPlayer.player.isPaused()) return;
-        String startTime = TimeUtil.musicFormatTime(suzuyaPlayer.currentTrack.getPosition());
-        String endTime = TimeUtil.musicFormatTime(suzuyaPlayer.currentTrack.getDuration());
+        AudioTrack current = suzuyaPlayer.currentTrack.track;
+        String startTime = TimeUtil.musicFormatTime(current.getPosition());
+        String endTime = TimeUtil.musicFormatTime(current.getDuration());
         String desc = "\\" +
                 suzuyaPlayer.playingStatus() +
                 " " +
@@ -174,7 +174,8 @@ class PlayerListener extends AudioEventAdapter {
         if (editCron == null) return;
         editCron.cancel(true);
         if (playingEmbed == null || messageID == null || suzuyaPlayer.currentTrack == null) return;
-        String endTime = TimeUtil.musicFormatTime(suzuyaPlayer.currentTrack.getDuration());
+        AudioTrack current = suzuyaPlayer.currentTrack.track;
+        String endTime = TimeUtil.musicFormatTime(current.getDuration());
         String desc = "\\" +
                 suzuyaPlayer.playingStatus() +
                 " " +

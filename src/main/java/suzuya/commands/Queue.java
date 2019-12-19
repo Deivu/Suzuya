@@ -1,6 +1,5 @@
 package suzuya.commands;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -13,6 +12,7 @@ import suzuya.structures.Settings;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Queue extends BaseCommand {
@@ -51,10 +51,10 @@ public class Queue extends BaseCommand {
     public String run(HandlerArgs handler, Settings config, String[] args) {
         if (!handler.suzuya.players.containsKey(handler.guild.getId()))
             return "Admiral,  " + handler.me.getName() + "  can't show anything if there is no player.";
-        if (handler.member.getVoiceState().getChannel() == null)
+        if (Objects.requireNonNull(handler.member.getVoiceState()).getChannel() == null)
             return "Admiral, " + handler.me.getName() + " knows you aren't in a voice channel, dummy.";
         SuzuyaPlayer suzuyaPlayer = handler.suzuya.players.get(handler.guild.getId());
-        if (!handler.member.getVoiceState().getChannel().getId().equals(suzuyaPlayer.voiceChannel.getId()))
+        if (!Objects.requireNonNull(handler.member.getVoiceState().getChannel()).getId().equals(suzuyaPlayer.voiceChannel.getId()))
             return "Admiral, " + handler.me.getName() + " won't let you see anything if you are not in the same voice channel where I am";
         int request;
         try {
@@ -65,10 +65,10 @@ public class Queue extends BaseCommand {
         }
         Page data = handler.suzuya.paginate(suzuyaPlayer.queue.size(), request, 10);
         this.number = data.start;
-        List<String> tracks = Arrays.stream(Arrays.copyOfRange(suzuyaPlayer.queue.toArray(new AudioTrack[0]), data.start, data.end))
+        List<String> tracks = Arrays.stream(Arrays.copyOfRange(suzuyaPlayer.queue.toArray(new suzuya.structures.SuzuyaPlayerTrack[0]), data.start, data.end))
                 .map(val -> {
                     increment();
-                    return "**" + number + ".** " + val.getInfo().title;
+                    return "**" + number + ".** " + val.track.getInfo().title;
                 })
                 .collect(Collectors.toList());
         MessageEmbed embed = new EmbedBuilder()

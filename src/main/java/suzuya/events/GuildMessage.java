@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import suzuya.client.SuzuyaClient;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
@@ -18,7 +19,7 @@ public class GuildMessage extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         if (!suzuya.isClientReady || event.isWebhookMessage()) return;
         HandlerArgs handler = new HandlerArgs(suzuya, event);
         if (handler.author.isBot()) return;

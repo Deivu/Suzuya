@@ -47,15 +47,16 @@ public class Volume extends BaseCommand {
         SuzuyaPlayer suzuyaPlayer = handler.suzuya.players.get(handler.guild.getId());
         if (!Objects.requireNonNull(handler.member.getVoiceState().getChannel()).getId().equals(suzuyaPlayer.voiceChannel.getId()))
             return "Admiral, " + handler.me.getName() + " won't let you change anything if you are not in the same voice channel where I am";
+        if (suzuyaPlayer.currentTrack.hasNoPermissionForAction(handler.member))
+            return "Admiral, " + handler.me.getName() + " won't let you change the volume if you don't have enough permissions to do so.";
         int request;
         try {
             request = Integer.parseInt(args[1]);
             if (request < 10) request = 10;
             if (request > 200) request = 200;
         } catch (Exception error) {
-            request = 10;
+            request = 50;
         }
-        handler.channel.sendMessage("Setting the playback volume to **" + request + "%**").queue();
         suzuyaPlayer.setVolume(request);
         return null;
     }

@@ -1,11 +1,11 @@
 package suzuya.commands;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.Permission;
 import suzuya.player.SuzuyaPlayer;
 import suzuya.structures.BaseCommand;
 import suzuya.structures.HandlerArgs;
 import suzuya.structures.Settings;
+import suzuya.structures.SuzuyaPlayerTrack;
 
 import java.util.*;
 
@@ -48,10 +48,12 @@ public class Shuffle extends BaseCommand {
         SuzuyaPlayer suzuyaPlayer = handler.suzuya.players.get(handler.guild.getId());
         if (!Objects.requireNonNull(handler.member.getVoiceState().getChannel()).getId().equals(suzuyaPlayer.voiceChannel.getId()))
             return "Admiral, " + handler.me.getName() + " won't let you shuffle anything if you are not in the same voice channel where I am";
-        List<AudioTrack> list = new ArrayList<>();
+        if (!suzuyaPlayer.currentTrack.isSuperUser(handler.member))
+            return "Admiral, " + handler.me.getName() + " won't let you shuffle anything if you don't have enough permissions to do so.";
+        List<SuzuyaPlayerTrack> list = new ArrayList<>();
         suzuyaPlayer.queue.drainTo(list);
         Collections.shuffle(list);
-        for (AudioTrack track: list) {
+        for (SuzuyaPlayerTrack track: list) {
             suzuyaPlayer.queue.offer(track);
         }
         return "Admiral, " + handler.me.getName() + " shuffled your queue, I deserve some head pat for that.";

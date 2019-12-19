@@ -5,11 +5,8 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import suzuya.player.SuzuyaResolver;
-import suzuya.structures.BaseCommand;
-import suzuya.structures.HandlerArgs;
-import suzuya.structures.Settings;
+import suzuya.structures.*;
 import suzuya.player.SuzuyaPlayer;
-import suzuya.structures.SuzuyaTrack;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -54,7 +51,7 @@ public class Play extends BaseCommand {
         String url = args[1];
         CompletableFuture<Message> sentMessage = handler.channel.sendMessage("Trying to find the query you gave me....").submit();
         sentMessage.thenApplyAsync(message -> {
-            CompletableFuture<SuzuyaTrack> request = new SuzuyaResolver(handler.suzuya).resolve(url);
+            CompletableFuture<SuzuyaResult> request = new SuzuyaResolver(handler.suzuya).resolve(url);
             request.thenApplyAsync(data -> {
                 try {
                     if (data.result.equals("NO_MATCHES") || data.result.equals("FAILED")) {
@@ -64,6 +61,7 @@ public class Play extends BaseCommand {
 
                     SuzuyaPlayer suzuyaPlayer = handler.suzuya.players.get(handler.guild.getId());
                     boolean executePlayTrack = false;
+
                     if (suzuyaPlayer == null) {
                         suzuyaPlayer = new SuzuyaPlayer(handler.suzuya, handler.channel, voiceChannel);
                         executePlayTrack = true;
@@ -71,19 +69,23 @@ public class Play extends BaseCommand {
 
                     if (data.result.equals("PLAYLIST")) {
                         for (AudioTrack track : data.tracks) {
-                            suzuyaPlayer.queue.offer(track);
+                            SuzuyaPlayerTrack playerTrack = new SuzuyaPlayerTrack(track, handler.member);
+                            suzuyaPlayer.queue.offer(playerTrack);
                         }
                         message.editMessage("Loaded the playlist `" + data.playlist + "`").queue();
                         if (executePlayTrack)
-                            suzuyaPlayer.player.playTrack(suzuyaPlayer.queue.poll());
+                            suzuyaPlayer.startPlaying(Objects.requireNonNull(suzuyaPlayer.queue.poll()));
                         return null;
                     }
 
                     AudioTrack track = data.tracks.get(0);
-                    suzuyaPlayer.queue.offer(track);
+                    SuzuyaPlayerTrack playerTrack = new SuzuyaPlayerTrack(track, handler.member);
+                    suzuyaPlayer.queue.offer(playerTrack);
+
                     message.editMessage("Loaded the track `" + track.getInfo().title + "`").queue();
+
                     if (executePlayTrack)
-                        suzuyaPlayer.player.playTrack(suzuyaPlayer.queue.poll());
+                        suzuyaPlayer.startPlaying(Objects.requireNonNull(suzuyaPlayer.queue.poll()));
                 } catch (Exception error) {
                     handler.suzuya.errorTrace(error.getMessage(), error.getStackTrace());
                 }
