@@ -14,6 +14,11 @@ public class SuzuyaUtils {
         this.suzuya = suzuya;
     }
 
+    public String suzuyaVersion() {
+        String version = suzuya.getClass().getPackage().getImplementationVersion();
+        return version == null ? "Dev-Unofficial" : version;
+    }
+
     public Page paginate(Integer length, Integer page, Integer max) {
         if (page == null) page = 1;
         int limit = length / max + ((length % max == 0) ? 0 : 1);

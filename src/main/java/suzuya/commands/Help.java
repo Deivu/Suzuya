@@ -44,28 +44,29 @@ public class Help extends BaseCommand {
     public String run(HandlerArgs handler, Settings config, String[] args) {
         if (args.length == 2) {
             BaseCommand command = handler.suzuya.commandHandler.getCommand(args[1]);
-            if (command == null) return null;
-            MessageEmbed embed = new EmbedBuilder()
-                    .setColor(handler.suzuya.defaultEmbedColor)
-                    .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
-                    .addField("Command Usage", command.getUsage(), false)
-                    .addField("Command Description", command.getDescription(), false)
-                    .setTimestamp(Instant.now())
-                    .build();
-            handler.channel.sendMessage(embed).queue();
+            if (command != null) {
+                MessageEmbed embed = new EmbedBuilder()
+                        .setColor(handler.suzuya.defaultEmbedColor)
+                        .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
+                        .addField("Command Usage", command.getUsage(), false)
+                        .addField("Command Description", command.getDescription(), false)
+                        .setTimestamp(Instant.now())
+                        .build();
+                handler.channel.sendMessage(embed).queue();
+            }
             return null;
         }
         MessageEmbed embed = new EmbedBuilder()
                 .setColor(handler.suzuya.defaultEmbedColor)
                 .setTitle(String.format("\\❔ %s's Help Menu", handler.me.getName()))
-                .setDescription("Use **" + config.prefix + "help <command>** for more info about a command.")
+                .setDescription("Use `" + config.prefix + "help <command>` for more info about a command.")
                 .setThumbnail(handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                 .addField("• General", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("General").toArray(), ", "), false)
                 .addField("• Tags", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Tags").toArray(), ", "), false)
                 .addField("• Moosik", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Moosik").toArray(), ", "), false)
                 .addField("• Config", StringUtils.join(handler.suzuya.commandHandler.getCommandsInCategory("Config").toArray(), ", "), false)
                 .addField("\\➡ Additional Links", "[Source](https://github.com/Deivu/Suzuya) | [Issues](https://github.com/Deivu/Suzuya/issues) | [Support](https://discordapp.com/invite/FVqbtGu) | [Donate](https://www.patreon.com/user?u=12059417)", false)
-                .setFooter("Total Commands: " + handler.suzuya.commandHandler.getCommandsSize(), handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
+                .setFooter( "Version: " + handler.suzuya.util.suzuyaVersion() + " | " + "Loaded Commands: " + handler.suzuya.commandHandler.getCommandsSize(), handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
                 .setTimestamp(Instant.now())
                 .build();
         handler.channel.sendMessage(embed).queue();

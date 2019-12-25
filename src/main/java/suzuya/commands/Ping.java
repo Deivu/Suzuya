@@ -38,7 +38,7 @@ public class Ping extends BaseCommand {
 
     @Override
     public String run(HandlerArgs handler, Settings config, String[] args) {
-        return "The current ping to Discord API is **" + handler.suzuya.client.getGatewayPing() + "**";
+        return "The current ping to Discord API is **" + handler.suzuya.client.getGatewayPing() + "** milliseconds";
     }
 }
 
