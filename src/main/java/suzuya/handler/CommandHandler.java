@@ -14,10 +14,9 @@ public class CommandHandler {
 
     public CommandHandler(SuzuyaClient suzuya) {
         this.suzuya = suzuya;
-        init();
     }
 
-    private void init() {
+    public CommandHandler init() {
         Reflections reflections = new Reflections("suzuya.commands");
         Set<Class<? extends BaseCommand>> subTypes = reflections.getSubTypesOf(BaseCommand.class);
         for (Class<? extends BaseCommand> s : subTypes) {
@@ -26,10 +25,11 @@ public class CommandHandler {
                 commands.putIfAbsent(command.getTitle(), command);
                 suzuya.SuzuyaLog.debug("Loaded Command: " + command.getTitle());
             } catch (Exception error) {
-                suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
             }
         }
         suzuya.SuzuyaLog.info("Loaded " + commands.size() + " commands");
+        return this;
     }
 
     public BaseCommand getCommand(String command) {

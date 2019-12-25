@@ -50,6 +50,7 @@ public class Play extends BaseCommand {
             return "Admiral, "+ handler.me.getName() +" knows you aren't in a voice channel, dummy.";
         String url = args[1];
         CompletableFuture<Message> sentMessage = handler.channel.sendMessage("Trying to find the query you gave me....").submit();
+        // async player loading meme
         sentMessage.thenApplyAsync(message -> {
             CompletableFuture<SuzuyaResult> request = new SuzuyaResolver(handler.suzuya).resolve(url);
             request.thenApplyAsync(data -> {
@@ -72,7 +73,7 @@ public class Play extends BaseCommand {
                             SuzuyaPlayerTrack playerTrack = new SuzuyaPlayerTrack(track, handler.member);
                             suzuyaPlayer.queue.offer(playerTrack);
                         }
-                        message.editMessage("Loaded the playlist `" + data.playlist + "`").queue();
+                        message.editMessage("Loaded the playlist `" + data.playlist + "`. This playlist contains `" + data.tracks.size() + "` track(s).").queue();
                         if (executePlayTrack)
                             suzuyaPlayer.startPlaying(Objects.requireNonNull(suzuyaPlayer.queue.poll()));
                         return null;
@@ -87,19 +88,19 @@ public class Play extends BaseCommand {
                     if (executePlayTrack)
                         suzuyaPlayer.startPlaying(Objects.requireNonNull(suzuyaPlayer.queue.poll()));
                 } catch (Exception error) {
-                    handler.suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                    handler.suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
                 }
                 return null;
             });
             request.exceptionally((error) -> {
-                handler.suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                handler.suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
                 message.editMessage("An error occured when trying to add the track. Error Message:\n`" + error.getMessage() + "`").queue();
                 return null;
             });
             return null;
         });
         sentMessage.exceptionally((error) -> {
-            handler.suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+            handler.suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
             handler.channel.sendMessage("An error occured when trying to add the track. Error Message:\n`" + error.getMessage() + "`").queue();
             return null;
         });

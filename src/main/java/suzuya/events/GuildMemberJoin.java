@@ -65,7 +65,7 @@ public class GuildMemberJoin extends ListenerAdapter {
                                 .submit()
                                 .thenAcceptAsync((dmChannel) -> dmChannel.sendMessage("<:hibiki_drink:545882402401157122> You have been kicked from **" + guild.getName() + "** because you failed to complete the verification.").queue())
                                 .whenComplete((ignore, error) -> {
-                                    suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                                    suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
                                     guild.kick(user.getId(), "Failed to complete Captcha. Possible spam bot").queue();
                                     String avatar = suzuya.client.getSelfUser().getAvatarUrl() != null ? suzuya.client.getSelfUser().getAvatarUrl() : suzuya.client.getSelfUser().getDefaultAvatarUrl();
                                     MessageEmbed embed = new EmbedBuilder()
@@ -87,18 +87,18 @@ public class GuildMemberJoin extends ListenerAdapter {
                     return null;
                 });
                 queuedSent.exceptionally((error) -> {
-                    suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                    suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
                     return null;
                 });
                 return null;
             });
             generateImage.exceptionally((error) -> {
-                suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
                 return null;
             });
         });
         restRoleAdd.exceptionally((error) -> {
-            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+            suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
             return null;
         });
     }

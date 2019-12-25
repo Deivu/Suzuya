@@ -63,7 +63,7 @@ public class Queue extends BaseCommand {
         } catch (Exception error) {
             request = 1;
         }
-        Page data = handler.suzuya.paginate(suzuyaPlayer.queue.size(), request, 10);
+        Page data = handler.suzuya.util.paginate(suzuyaPlayer.queue.size(), request, 10);
         this.number = data.start;
         List<String> tracks = Arrays.stream(Arrays.copyOfRange(suzuyaPlayer.queue.toArray(new suzuya.structures.SuzuyaPlayerTrack[0]), data.start, data.end))
                 .map(val -> {

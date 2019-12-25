@@ -48,6 +48,8 @@ public class Shuffle extends BaseCommand {
         SuzuyaPlayer suzuyaPlayer = handler.suzuya.players.get(handler.guild.getId());
         if (!Objects.requireNonNull(handler.member.getVoiceState().getChannel()).getId().equals(suzuyaPlayer.voiceChannel.getId()))
             return "Admiral, " + handler.me.getName() + " won't let you shuffle anything if you are not in the same voice channel where I am";
+        if (suzuyaPlayer.queue.size() < 2)
+            return "Admiral, there is no point on trying to shuffle a queue that contains less than 2 songs.";
         if (!suzuyaPlayer.currentTrack.isSuperUser(handler.member))
             return "Admiral, " + handler.me.getName() + " won't let you shuffle anything if you don't have enough permissions to do so.";
         List<SuzuyaPlayerTrack> list = new ArrayList<>();

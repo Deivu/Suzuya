@@ -12,12 +12,12 @@ public class SuzuyaPlayerTrack {
         this.member = member;
     }
 
-    public boolean hasNoPermissionForAction(Member member) {
-        return !member.getId().equals(this.member.getId()) && !member.hasPermission(Permission.PRIORITY_SPEAKER);
+    public boolean hasNoPermissionForAction(Member invoker) {
+        return !invoker.getId().equals(member.getId()) && !invoker.hasPermission(Permission.PRIORITY_SPEAKER);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isSuperUser(Member member) {
-        return member.hasPermission(Permission.PRIORITY_SPEAKER);
+    public boolean isSuperUser(Member invoker) {
+        return invoker.hasPermission(Permission.PRIORITY_SPEAKER);
     }
 }

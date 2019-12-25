@@ -15,14 +15,14 @@ public class TagsHandler {
     public TagsHandler(SuzuyaClient suzuya) {
         this.suzuya = suzuya;
         this.pool = JdbcConnectionPool.create(
-                "jdbc:h2:file:" + suzuya.config.getDir() + "db\\SuzuyaTags;MODE=MYSQL;MULTI_THREADED=1",
+                "jdbc:h2:file:" + suzuya.suzuyaConfig.getDir() + "db\\SuzuyaTags;MODE=MYSQL;MULTI_THREADED=1",
                 "",
                 ""
         );
         suzuya.SuzuyaLog.info("Connected to Tags Database.");
     }
 
-    public void initDb() {
+    public TagsHandler init() {
         String sql = "CREATE TABLE IF NOT EXISTS tags(" +
                 "user_id VARCHAR(128) NOT NULL," +
                 "guild_id VARCHAR(128) NOT NULL," +
@@ -36,9 +36,10 @@ public class TagsHandler {
                 cmd.execute();
             }
         } catch (Exception error) {
-            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+            suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
             System.exit(0);
         }
+        return this;
     }
 
     public Tag getTag(String guild_id, String title) {
@@ -60,7 +61,7 @@ public class TagsHandler {
                 }
             }
         } catch (Exception error) {
-            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+            suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
         }
         return tag.exists ? tag : null;
     }
@@ -85,7 +86,7 @@ public class TagsHandler {
                 }
             }
         } catch (Exception error) {
-            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+            suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
         }
         return tags.size() >= 1 ? tags : null;
     }
@@ -102,7 +103,7 @@ public class TagsHandler {
                 }
             }
         } catch (Exception error) {
-            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+            suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
         }
         return content;
     }
@@ -128,7 +129,7 @@ public class TagsHandler {
                 if (update > 0) status = true;
             }
         } catch (Exception error) {
-            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+            suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
         }
         return status;
     }
@@ -144,7 +145,7 @@ public class TagsHandler {
                 if (update > 0) status = true;
             }
         } catch (Exception error) {
-            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+            suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
         }
         return status;
     }

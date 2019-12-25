@@ -42,7 +42,7 @@ public class GuildVerificationMessage extends ListenerAdapter {
                     .submit()
                     .handleAsync((res, error) -> {
                         if (error != null) {
-                            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                            suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
                             return null;
                         }
                         event.getMessage().delete().queue();
@@ -73,7 +73,7 @@ public class GuildVerificationMessage extends ListenerAdapter {
                 .submit()
                 .handleAsync((res, error) -> {
                     if (error != null) {
-                        suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+                        suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
                         return null;
                     }
                     res.sendMessage("<:uzuki_pyon:545889147211218945> Yay! Admiral **" + user.getAsTag() + "**, you now have access to the **" + guild.getName() + "**").queue();

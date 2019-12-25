@@ -8,12 +8,12 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.FileInputStream;
 
-public class Config {
+public class SuzuyaConfig {
     private final SuzuyaClient suzuya;
     private String token;
     private String prefix;
 
-    public Config(SuzuyaClient suzuya) {
+    public SuzuyaConfig(SuzuyaClient suzuya) {
         this.suzuya = suzuya;
         init();
     }
@@ -61,7 +61,7 @@ public class Config {
                 throw new Error("Config Default Prefix is null, cannot boot the bot.");
             suzuya.SuzuyaLog.info("Configuration Loaded.");
         } catch (Exception error) {
-            suzuya.errorTrace(error.getMessage(), error.getStackTrace());
+            suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
             System.exit(0);
         }
     }

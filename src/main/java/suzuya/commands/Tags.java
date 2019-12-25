@@ -52,7 +52,7 @@ public class Tags extends BaseCommand {
         } catch (Exception error) {
             request = 1;
         }
-        Page data = handler.suzuya.paginate(tags.size(), request, 20);
+        Page data = handler.suzuya.util.paginate(tags.size(), request, 20);
         List<suzuya.structures.Tag> parts = tags.subList(data.start, data.end);
         ArrayList<String> titles = new ArrayList<>();
         for (suzuya.structures.Tag part : parts) {

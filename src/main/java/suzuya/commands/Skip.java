@@ -47,7 +47,7 @@ public class Skip extends BaseCommand {
         SuzuyaPlayer suzuyaPlayer = handler.suzuya.players.get(handler.guild.getId());
         if (!Objects.requireNonNull(handler.member.getVoiceState().getChannel()).getId().equals(suzuyaPlayer.voiceChannel.getId()))
             return "Admiral, " + handler.me.getName() + " won't let you skip anything if you are not in the same voice channel where I am.";
-        if (suzuyaPlayer.queue.size() == 0 || suzuyaPlayer.currentTrack.hasNoPermissionForAction(handler.member))
+        if (suzuyaPlayer.currentTrack.hasNoPermissionForAction(handler.member))
             return "Admiral, " + handler.me.getName() + " won't let you skip anything if you don't have enough permissions to do so.";
         suzuyaPlayer.player.stopTrack();
         return null;
