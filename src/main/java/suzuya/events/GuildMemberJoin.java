@@ -61,25 +61,25 @@ public class GuildMemberJoin extends ListenerAdapter {
                     captcha.runnable = () -> {
                         suzuya.captcha.remove(key);
                         if (!guild.isMember(user)) return;
-                        user.openPrivateChannel()
-                                .submit()
-                                .thenAcceptAsync((dmChannel) -> dmChannel.sendMessage("<:hibiki_drink:545882402401157122> You have been kicked from **" + guild.getName() + "** because you failed to complete the verification.").queue())
-                                .whenComplete((ignore, error) -> {
-                                    suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
-                                    guild.kick(user.getId(), "Failed to complete Captcha. Possible spam bot").queue();
-                                    String avatar = suzuya.client.getSelfUser().getAvatarUrl() != null ? suzuya.client.getSelfUser().getAvatarUrl() : suzuya.client.getSelfUser().getDefaultAvatarUrl();
-                                    MessageEmbed embed = new EmbedBuilder()
-                                            .setTitle("📝 | User Kicked")
-                                            .setColor(suzuya.defaultEmbedColor)
-                                            .setDescription("**• User:** " + user.getAsTag() + " `(" + user.getId() + ")`" + "\n**• Moderator:** " + suzuya.client.getSelfUser().getAsTag() + "\n**• Reason:** <:hibikino:478068372802633739> Failed to complete the Verification.")
-                                            .setAuthor(suzuya.client.getSelfUser().getName(), avatar, avatar)
-                                            .setTimestamp(Instant.now())
-                                            .setFooter(guild.getName(), guild.getIconUrl() != null ? guild.getIconUrl() : avatar)
-                                            .build();
-                                    channel.sendMessage(embed).queue();
-                                    verificationChannel.sendMessage("<:uggh:448387137596030979> **" + user.getAsTag() + "** failed the verification.").queue();
-                                    sentMessage.delete().queue();
-                                });
+                        CompletableFuture<PrivateChannel> dm = user.openPrivateChannel().submit();
+                        dm.thenAcceptAsync((dmChannel) -> dmChannel.sendMessage("<:hibiki_drink:545882402401157122> You have been kicked from **" + guild.getName() + "** because you failed to complete the verification.").queue());
+                        dm.exceptionally((error) -> {
+                                suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
+                                return null;
+                        });
+                        guild.kick(user.getId(), "Failed to complete Captcha. Possible spam bot").queue();
+                        String avatar = suzuya.client.getSelfUser().getAvatarUrl() != null ? suzuya.client.getSelfUser().getAvatarUrl() : suzuya.client.getSelfUser().getDefaultAvatarUrl();
+                        MessageEmbed embed = new EmbedBuilder()
+                                .setTitle("📝 | User Kicked")
+                                .setColor(suzuya.defaultEmbedColor)
+                                .setDescription("**• User:** " + user.getAsTag() + " `(" + user.getId() + ")`" + "\n**• Moderator:** " + suzuya.client.getSelfUser().getAsTag() + "\n**• Reason:** <:hibikino:478068372802633739> Failed to complete the Verification.")
+                                .setAuthor(suzuya.client.getSelfUser().getName(), avatar, avatar)
+                                .setTimestamp(Instant.now())
+                                .setFooter(guild.getName(), guild.getIconUrl() != null ? guild.getIconUrl() : avatar)
+                                .build();
+                        channel.sendMessage(embed).queue();
+                        verificationChannel.sendMessage("<:uggh:448387137596030979> **" + user.getAsTag() + "** failed the verification.").queue();
+                        sentMessage.delete().queue();
                     };
                     captcha.message = sentMessage;
                     captcha.future = suzuya.scheduler.schedule(captcha.runnable, 31, TimeUnit.SECONDS);
