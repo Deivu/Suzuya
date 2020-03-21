@@ -27,6 +27,11 @@ public class SuzuyaUtils {
         return new Page(selected, limit, start, length > max ? start + max : length);
     }
 
+    public String trim(String str, int limit) {
+        if (limit > str.length()) return str;
+        return str.substring(0, limit) + "...";
+    }
+
     public void errorTrace(String title, StackTraceElement[] traces) {
         List<String> trace = Arrays.stream(traces)
                 .map(val -> val.toString() + "\n")

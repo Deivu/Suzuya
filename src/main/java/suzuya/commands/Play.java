@@ -8,6 +8,8 @@ import suzuya.player.SuzuyaResolver;
 import suzuya.structures.*;
 import suzuya.player.SuzuyaPlayer;
 
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
@@ -44,19 +46,25 @@ public class Play extends BaseCommand {
     @Override
     public String run(HandlerArgs handler, Settings config, String[] args) {
         if (args.length <= 1)
-            return "Admiral, you forgot the link, dummy.";
+            return "Admiral, you forgot the query, dummy.";
         VoiceChannel voiceChannel = Objects.requireNonNull(handler.member.getVoiceState()).getChannel();
         if (voiceChannel == null)
             return "Admiral, "+ handler.me.getName() +" knows you aren't in a voice channel, dummy.";
-        String url = args[1];
+        String query = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        String indentifier = this.verifyURL(query) ? query : "ytsearch:" + query;
         CompletableFuture<Message> sentMessage = handler.channel.sendMessage("Trying to find the query you gave me....").submit();
         // async player loading meme
         sentMessage.thenApplyAsync(message -> {
-            CompletableFuture<SuzuyaResult> request = new SuzuyaResolver(handler.suzuya).resolve(url);
+            CompletableFuture<SuzuyaResult> request = new SuzuyaResolver(handler.suzuya).resolve(indentifier);
             request.thenApplyAsync(data -> {
                 try {
-                    if (data.result.equals("NO_MATCHES") || data.result.equals("FAILED")) {
-                        message.editMessage("Admiral, seems like I cannot load this track after all.").queue();
+                    if (data.result.equals("FAILED")) {
+                        message.editMessage("Admiral, seems like I cannot load this query after all.").queue();
+                        return null;
+                    }
+
+                    if (data.result.equals("NO_MATCHES")) {
+                        message.editMessage("Admiral, I didn't find anything on the query you gave. Please try again!").queue();
                         return null;
                     }
 
@@ -105,6 +113,15 @@ public class Play extends BaseCommand {
             return null;
         });
         return null;
+    }
+
+    private  boolean verifyURL(String query)  {
+        try {
+            new URL(query);
+            return true;
+        } catch (Exception exception) {
+            return false;
+        }
     }
 }
 

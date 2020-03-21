@@ -21,8 +21,8 @@ public class SuzuyaResolver implements AudioLoadResultHandler {
         this.playerManager = suzuya.PlayerManager;
     }
 
-    public CompletableFuture<SuzuyaResult> resolve(String link) {
-        this.playerManager.loadItem(link, this);
+    public CompletableFuture<SuzuyaResult> resolve(String query) {
+        this.playerManager.loadItem(query, this);
         return result;
     }
 

@@ -73,6 +73,27 @@ public class SuzuyaPlayer {
         suzuya.players.remove(guild.getId());
     }
 
+    String constructStatus(String status, String timeStart, String bar,  String timeEnd, String volumeIcon, String volumeStrength) {
+        StringBuilder str = new StringBuilder();
+        str.append("`")
+                .append(status)
+                .append("`")
+                .append(" ")
+                .append("`")
+                .append(timeStart)
+                .append(" ")
+                .append(bar)
+                .append(" ")
+                .append(timeEnd)
+                .append("`")
+                .append(" ")
+                .append("`")
+                .append(volumeIcon)
+                .append(volumeStrength)
+                .append("`");
+        return str.toString();
+    }
+
     String playingStatus() {
         if (player.getPlayingTrack() != null && !player.isPaused()) return "▶️";
         if (player.isPaused()) return "⏸️";
@@ -84,12 +105,12 @@ public class SuzuyaPlayer {
         AudioTrack current = currentTrack.track == null ? player.getPlayingTrack() : currentTrack.track;
         long pos = ended ? current.getDuration() : current.getPosition();
         double progress = (double) pos / current.getDuration();
-        int limit = 9;
+        int limit = 14;
         int curr = (int)(progress * limit);
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < limit + 1; i++) {
             if (i == curr) str.append("\uD83D\uDD18");
-            else str.append("▬");
+            else str.append("⎯");
         }
         return str.toString();
     }

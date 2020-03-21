@@ -4,10 +4,10 @@ import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.source.bandcamp.BandcampAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.beam.BeamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
@@ -68,25 +68,25 @@ public class SuzuyaClient {
                 .init();
         tagsHandler = new TagsHandler(this)
                 .init();
-        client = new JDABuilder()
-                .setToken(suzuyaConfig.getToken())
-                .setAudioSendFactory(new NativeAudioSendFactory())
-                .build();
+        PlayerManager
+                .setFrameBufferDuration(1000);
         PlayerManager
                 .getConfiguration()
                 .setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         PlayerManager
                 .getConfiguration()
                 .setOpusEncodingQuality(10);
-        YoutubeAudioSourceManager youtube = new YoutubeAudioSourceManager();
-        youtube.setPlaylistPageCount(1000);
-        PlayerManager.registerSourceManager(youtube);
+        PlayerManager.registerSourceManager(new YoutubeAudioSourceManager(true));
         PlayerManager.registerSourceManager(SoundCloudAudioSourceManager.createDefault());
         PlayerManager.registerSourceManager(new BandcampAudioSourceManager());
         PlayerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
         PlayerManager.registerSourceManager(new VimeoAudioSourceManager());
         PlayerManager.registerSourceManager(new BeamAudioSourceManager());
         PlayerManager.registerSourceManager(new HttpAudioSourceManager());
-        PlayerManager.registerSourceManager(new LocalAudioSourceManager());
+
+        client = new JDABuilder()
+                .setToken(suzuyaConfig.getToken())
+                .setAudioSendFactory(new NativeAudioSendFactory())
+                .build();
     }
 }
