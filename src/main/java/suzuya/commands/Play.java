@@ -115,11 +115,11 @@ public class Play extends BaseCommand {
         return null;
     }
 
-    private  boolean verifyURL(String query)  {
+    private boolean verifyURL(String query)  {
         try {
             new URL(query);
             return true;
-        } catch (Exception exception) {
+        } catch (Exception error) {
             return false;
         }
     }
