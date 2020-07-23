@@ -18,15 +18,24 @@ import java.util.concurrent.TimeUnit;
 
 class PlayerListener extends AudioEventAdapter {
     private final SuzuyaPlayer suzuyaPlayer;
-    private final SelfUser me;
-
-    private String messageID = null;
     private ScheduledFuture<?> editCron = null;
+    private String messageID = null;
     private EmbedBuilder playingEmbed = null;
 
     PlayerListener(SuzuyaPlayer suzuyaPlayer) {
         this.suzuyaPlayer = suzuyaPlayer;
-        this.me = suzuyaPlayer.suzuya.client.getSelfUser();
+    }
+
+    public void setMessageID(String id) {
+        messageID = id;
+    }
+
+    public void setPlayingEmbed(EmbedBuilder playingEmbed) {
+        this.playingEmbed = playingEmbed;
+    }
+
+    public EmbedBuilder getPlayingEmbed() {
+        return playingEmbed;
     }
 
     @Override
@@ -38,29 +47,9 @@ class PlayerListener extends AudioEventAdapter {
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
         if (suzuyaPlayer.volume != player.getVolume()) player.setVolume(suzuyaPlayer.volume);
-        String thumbnail = me.getAvatarUrl() != null ? me.getAvatarUrl() : me.getDefaultAvatarUrl();
-        if (track.getSourceManager().getSourceName().equals("youtube")) thumbnail = "https://img.youtube.com/vi/" + track.getInfo().identifier + "/0.jpg";
-
-        String startTime = TimeUtil.musicFormatTime(0);
-        String endTime = TimeUtil.musicFormatTime(track.getDuration());
-
-        playingEmbed = new EmbedBuilder()
-                .setColor(suzuyaPlayer.suzuya.defaultEmbedColor)
-                .setTitle("\\\uD83D\uDD17 Track Link", "https://www.youtube.com/watch?v=" + track.getInfo().identifier)
-                .setDescription(this.suzuyaPlayer.constructStatus(suzuyaPlayer.playingStatus(), startTime, suzuyaPlayer.formatBar(false), endTime, suzuyaPlayer.volumeIcon(), String.valueOf(suzuyaPlayer.volume)))
-                .addField("Now Playing", "`" + this.suzuyaPlayer.suzuya.util.trim(track.getInfo().title,  25) + "`", false)
-                .setThumbnail(thumbnail)
-                .setFooter("Uploader: " + track.getInfo().author , null)
-                .setTimestamp(Instant.now());
-        CompletableFuture<Message> sent = suzuyaPlayer.handleMessageFuture(playingEmbed.build());
-        sent.thenAcceptAsync(message -> {
-                    messageID = message.getId();
-                    editCron = this.suzuyaPlayer.suzuya.scheduler.scheduleAtFixedRate(this::onTrackUpdate, 5, 5, TimeUnit.SECONDS);
-                });
-        sent.exceptionally(error -> {
-            suzuyaPlayer.suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
-            return null;
-        });
+        CompletableFuture<Message> sent = suzuyaPlayer.sendPlayingMessage();
+        if (sent.isCompletedExceptionally()) return;
+        sent.thenAcceptAsync(message -> editCron = this.suzuyaPlayer.suzuya.scheduler.scheduleAtFixedRate(this::onTrackUpdate, 5, 5, TimeUnit.SECONDS));
     }
 
     @Override
@@ -107,7 +96,7 @@ class PlayerListener extends AudioEventAdapter {
     private void onTrackUpdate() {
         if (playingEmbed == null || messageID == null || suzuyaPlayer.currentTrack == null) {
             editCron.cancel(true);
-            messageID = null;
+            setMessageID(null);
             return;
         }
         if (suzuyaPlayer.player.isPaused()) return;
@@ -119,14 +108,13 @@ class PlayerListener extends AudioEventAdapter {
     }
 
     private void onEndEmbed() {
-        if (editCron == null) return;
-        editCron.cancel(true);
+        if (editCron != null) editCron.cancel(true);
         if (playingEmbed == null || messageID == null || suzuyaPlayer.currentTrack == null) return;
         AudioTrack current = suzuyaPlayer.currentTrack.track;
         String endTime = TimeUtil.musicFormatTime(current.getDuration());
         playingEmbed.setDescription(this.suzuyaPlayer.constructStatus(suzuyaPlayer.playingStatus(), endTime, suzuyaPlayer.formatBar(true), endTime, suzuyaPlayer.volumeIcon(), String.valueOf(suzuyaPlayer.volume)));
         suzuyaPlayer.editMessage(messageID, playingEmbed.build());
-        messageID = null;
-        playingEmbed = null;
+        setMessageID(null);
+        setPlayingEmbed(null);
     }
 }

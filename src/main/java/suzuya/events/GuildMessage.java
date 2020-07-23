@@ -1,8 +1,6 @@
 package suzuya.events;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +25,6 @@ public class GuildMessage extends ListenerAdapter {
         if (config == null) {
             suzuya.settingsHandler.setDefaults(handler.guild.getId());
             config = suzuya.settingsHandler.getSettings(handler.guild.getId());
-            // If still null, lets just return
             if (config == null) return;
         }
         String content = handler.msg.getContentRaw();
@@ -36,13 +33,9 @@ public class GuildMessage extends ListenerAdapter {
         String query = args[0].substring(config.prefix.length());
         BaseCommand command = suzuya.commandHandler.getCommand(query);
         if (command == null) {
-            try {
-                String tag = suzuya.tagsHandler.getTagContent(handler.guild.getId(), query);
-                if (tag == null) return;
-                handler.channel.sendMessage(tag).queue();
-            } catch (Exception error) {
-                HandleError(error, handler);
-            }
+            String tag = suzuya.tagsHandler.getTagContent(handler.guild.getId(), query);
+            if (tag == null) return;
+            handler.channel.sendMessage(tag).queue();
             return;
         }
         Permission[] perms = command.getPermissions();
@@ -55,52 +48,10 @@ public class GuildMessage extends ListenerAdapter {
                 }
             }
             if (missing != null) {
-                try {
-                    handler.channel.sendMessage("Admiral, you don't have the permission **" + missing + "** to use this command.").queue();
-                } catch (Exception error) {
-                    HandleError(error, handler);
-                }
+                handler.channel.sendMessage("Admiral, you don't have the permission **" + missing + "** to use this command.").queue();
             }
         }
-        try {
-            String response = command.run(handler, config, args);
-            if (response != null) handler.channel.sendMessage(response).queue();
-        } catch (Exception error) {
-            HandleError(error, handler, command);
-        }
-    }
-
-    private void HandleError(Exception error, HandlerArgs handler, BaseCommand command) {
-        String commandName = command == null ? "Tags System" : command.getTitle();
-        MessageEmbed embed = new EmbedBuilder()
-                .setColor(suzuya.defaultEmbedColor)
-                .setTitle("• Command Error")
-                .setDescription("```java\n" + error.toString() + "```")
-                .addField("Goumen Admiral...", "You shouldn't be receiving this... unless you are doing something wrong", false)
-                .setFooter("Module Name: " + commandName, handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
-                .build();
-        try {
-            handler.channel.sendMessage(embed).queue();
-        } catch (Exception _error) {
-            suzuya.util.errorTrace(_error.getMessage(), _error.getStackTrace());
-        }
-        suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
-    }
-
-    private void HandleError(Exception error, HandlerArgs handler) {
-        MessageEmbed embed = new EmbedBuilder()
-                .setColor(suzuya.defaultEmbedColor)
-                .setTitle("• Command Error")
-                .setDescription("```java\n" + error.toString() + "```")
-                .addField("Goumen Admiral...", "You shouldn't be receiving this... unless you are doing something wrong", false)
-                .setFooter("Module Name: Tags System", handler.me.getAvatarUrl() != null ? handler.me.getAvatarUrl() : handler.me.getDefaultAvatarUrl())
-                .build();
-        try {
-            handler.channel.sendMessage(embed).queue();
-        } catch (Exception _error) {
-            suzuya.util.errorTrace(_error.getMessage(), _error.getStackTrace());
-        }
-        handler.channel.sendMessage(embed).queue();
-        suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
+        String response = command.run(handler, config, args);
+        if (response != null) handler.channel.sendMessage(response).queue();
     }
 }

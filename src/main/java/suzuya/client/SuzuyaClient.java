@@ -15,6 +15,10 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import com.sun.management.OperatingSystemMXBean;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import suzuya.util.SuzuyaConfig;
@@ -84,8 +88,25 @@ public class SuzuyaClient {
         PlayerManager.registerSourceManager(new BeamAudioSourceManager());
         PlayerManager.registerSourceManager(new HttpAudioSourceManager());
 
-        client = new JDABuilder()
-                .setToken(suzuyaConfig.getToken())
+        client = JDABuilder
+                .createDefault(suzuyaConfig.getToken())
+                .setMemberCachePolicy(
+                        MemberCachePolicy.any(
+                                MemberCachePolicy.ONLINE,
+                                MemberCachePolicy.OWNER,
+                                MemberCachePolicy.VOICE
+                        )
+                )
+                .disableIntents(
+                        GatewayIntent.DIRECT_MESSAGE_TYPING,
+                        GatewayIntent.DIRECT_MESSAGE_REACTIONS,
+                        GatewayIntent.DIRECT_MESSAGES,
+                        GatewayIntent.GUILD_PRESENCES,
+                        GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                        GatewayIntent.GUILD_MESSAGE_TYPING
+                )
+                .disableCache(CacheFlag.ACTIVITY)
+                .setChunkingFilter(ChunkingFilter.NONE)
                 .setAudioSendFactory(new NativeAudioSendFactory())
                 .build();
     }
