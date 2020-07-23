@@ -2,7 +2,7 @@ package suzuya.events;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import suzuya.client.SuzuyaClient;
 import suzuya.structures.CaptchaExecutor;
@@ -16,7 +16,7 @@ public class GuildMemberUnverifiedLeave extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
+    public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
         User user = event.getUser();
         Guild guild = event.getGuild();
         Settings config = suzuya.settingsHandler.getSettings(guild.getId());
