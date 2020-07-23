@@ -60,7 +60,7 @@ public class Play extends BaseCommand {
                 });
         sentMessage.thenApplyAsync(message -> {
             CompletableFuture<SuzuyaResult> request = new SuzuyaResolver(handler.suzuya).resolve(indentifier)
-                    .exceptionally((error) -> {
+                    .exceptionally(error -> {
                         handler.suzuya.util.errorTrace(error.getMessage(), error.getStackTrace());
                         message.editMessage("An error occured when trying to add the track. Error Message:\n`" + error.getMessage() + "`").queue();
                         return null;

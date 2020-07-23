@@ -8,7 +8,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.SelfUser;
 import suzuya.util.TimeUtil;
 
 import java.time.Instant;
@@ -48,8 +47,10 @@ class PlayerListener extends AudioEventAdapter {
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
         if (suzuyaPlayer.volume != player.getVolume()) player.setVolume(suzuyaPlayer.volume);
         CompletableFuture<Message> sent = suzuyaPlayer.sendPlayingMessage();
-        if (sent.isCompletedExceptionally()) return;
-        sent.thenAcceptAsync(message -> editCron = this.suzuyaPlayer.suzuya.scheduler.scheduleAtFixedRate(this::onTrackUpdate, 5, 5, TimeUnit.SECONDS));
+        sent.thenAcceptAsync(message -> {
+            if (sent.isCompletedExceptionally()) return;
+            editCron = this.suzuyaPlayer.suzuya.scheduler.scheduleAtFixedRate(this::onTrackUpdate, 5, 5, TimeUnit.SECONDS);
+        });
     }
 
     @Override
